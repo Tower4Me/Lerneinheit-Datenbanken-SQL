@@ -2214,9 +2214,308 @@ abteilung:   (1, 'IT'), (2, 'Vertrieb')
       </div>
     </div>
   </div>
-  <div class="page" id="page-m5-dml"><span class="chapter-tag tag-dml">Modul 05</span><h1>DML Befehle</h1><p class="lead">Folgt im nächsten Update.</p></div>
-  <div class="page" id="page-m5-terminal"><span class="chapter-tag tag-terminal">Modul 05</span><h1>Praxis: Azubi-Chaos</h1><p class="lead">Folgt im nächsten Update.</p></div>
-  <div class="page" id="page-m5-quiz"><span class="chapter-tag tag-quiz">Quiz 5</span><h1>Quiz 5</h1><p class="lead">Folgt wenn Modul 5 fertig ist.</p></div>
+  <!-- MODUL 5 DML -->
+  <div class="page" id="page-m5-dml">
+    <span class="chapter-tag tag-dml">Modul 05 &middot; DML</span>
+    <h1>DML &ndash; Data Manipulation Language</h1>
+    <p class="lead">DML (Data Manipulation Language = Datenmanipulationssprache) umfasst alle Befehle, die mit den eigentlichen Daten arbeiten: lesen, einf&uuml;gen, &auml;ndern, l&ouml;schen.</p>
+    <div class="info-box green"><div class="box-label">Merkhilfe</div><p>DML = B&uuml;cher ins Regal stellen, rausnehmen, suchen und &auml;ndern. Das Regal (Struktur) wurde schon von DDL gebaut.</p></div>
+
+    <h2>SELECT &ndash; Daten lesen</h2>
+    <p>SELECT ist der mit Abstand h&auml;ufigste SQL-Befehl. Er liest Daten aus einer oder mehreren Tabellen.</p>
+    <div class="code-block"><span class="code-lang">SQL</span><span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tbl">mitarbeiter</span>;
+
+<span class="cm">-- Nur bestimmte Spalten</span>
+<span class="kw">SELECT</span> name, gehalt <span class="kw">FROM</span> <span class="tbl">mitarbeiter</span>;
+
+<span class="cm">-- Mit Bedingung</span>
+<span class="kw">SELECT</span> name, gehalt <span class="kw">FROM</span> <span class="tbl">mitarbeiter</span>
+<span class="kw">WHERE</span> gehalt &gt; <span class="num">3000</span>;
+
+<span class="cm">-- Sortiert</span>
+<span class="kw">SELECT</span> name, gehalt <span class="kw">FROM</span> <span class="tbl">mitarbeiter</span>
+<span class="kw">ORDER BY</span> gehalt <span class="kw">DESC</span>;
+
+<span class="cm">-- Begrenzt auf 5 Ergebnisse</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tbl">mitarbeiter</span> <span class="kw">LIMIT</span> <span class="num">5</span>;</div>
+
+    <h2>WHERE &ndash; Bedingungen</h2>
+    <p>WHERE filtert Datens&auml;tze. Ohne WHERE werden alle Zeilen zur&uuml;ckgegeben oder ver&auml;ndert.</p>
+    <div class="code-block"><span class="code-lang">SQL</span><span class="cm">-- Vergleichsoperatoren</span>
+<span class="kw">WHERE</span> gehalt = <span class="num">3000</span>      <span class="cm">-- genau gleich</span>
+<span class="kw">WHERE</span> gehalt &lt;&gt; <span class="num">3000</span>     <span class="cm">-- ungleich (auch != m&ouml;glich)</span>
+<span class="kw">WHERE</span> gehalt &gt; <span class="num">3000</span>      <span class="cm">-- gr&ouml;&szlig;er als</span>
+<span class="kw">WHERE</span> gehalt <span class="kw">BETWEEN</span> <span class="num">2000</span> <span class="kw">AND</span> <span class="num">4000</span>  <span class="cm">-- zwischen</span>
+<span class="kw">WHERE</span> name <span class="kw">LIKE</span> <span class="str">'B%'</span>     <span class="cm">-- beginnt mit B (% = beliebig viele Zeichen)</span>
+<span class="kw">WHERE</span> abt_id <span class="kw">IN</span> (<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>) <span class="cm">-- einer aus der Liste</span>
+<span class="kw">WHERE</span> email <span class="kw">IS NULL</span>      <span class="cm">-- kein Wert vorhanden</span>
+
+<span class="cm">-- Kombinieren</span>
+<span class="kw">WHERE</span> gehalt &gt; <span class="num">3000</span> <span class="kw">AND</span> abt_id = <span class="num">2</span>
+<span class="kw">WHERE</span> abt_id = <span class="num">1</span> <span class="kw">OR</span> abt_id = <span class="num">2</span></div>
+
+    <h2>INSERT &ndash; Daten einf&uuml;gen</h2>
+    <div class="code-block"><span class="code-lang">SQL</span><span class="cm">-- Alle Spalten angeben</span>
+<span class="kw">INSERT INTO</span> <span class="tbl">mitarbeiter</span> (name, email, gehalt, abt_id)
+<span class="kw">VALUES</span> (<span class="str">'Ben Azubi'</span>, <span class="str">'ben@towertech.de'</span>, <span class="num">1800.00</span>, <span class="num">1</span>);
+
+<span class="cm">-- Mehrere Zeilen auf einmal</span>
+<span class="kw">INSERT INTO</span> <span class="tbl">mitarbeiter</span> (name, email, gehalt, abt_id) <span class="kw">VALUES</span>
+  (<span class="str">'Anna Chef'</span>,  <span class="str">'anna@towertech.de'</span>,  <span class="num">5500.00</span>, <span class="num">1</span>),
+  (<span class="str">'Tom IT'</span>,     <span class="str">'tom@towertech.de'</span>,   <span class="num">3200.00</span>, <span class="num">2</span>),
+  (<span class="str">'Lisa Sales'</span>, <span class="str">'lisa@towertech.de'</span>,  <span class="num">2900.00</span>, <span class="num">3</span>);</div>
+    <div class="info-box yellow"><div class="box-label">Wichtig</div><p>Spalten mit DEFAULT oder AUTOINCREMENT k&ouml;nnen weggelassen werden. NOT NULL Spalten ohne DEFAULT m&uuml;ssen angegeben werden, sonst gibt es einen Fehler.</p></div>
+
+    <h2>UPDATE &ndash; Daten &auml;ndern</h2>
+    <div class="code-block"><span class="code-lang">SQL</span><span class="cm">-- Gehalt eines bestimmten Mitarbeiters &auml;ndern</span>
+<span class="kw">UPDATE</span> <span class="tbl">mitarbeiter</span>
+<span class="kw">SET</span> gehalt = <span class="num">2000.00</span>
+<span class="kw">WHERE</span> id = <span class="num">1</span>;
+
+<span class="cm">-- Mehrere Spalten gleichzeitig &auml;ndern</span>
+<span class="kw">UPDATE</span> <span class="tbl">mitarbeiter</span>
+<span class="kw">SET</span> gehalt = <span class="num">2100.00</span>, abt_id = <span class="num">2</span>
+<span class="kw">WHERE</span> name = <span class="str">'Ben Azubi'</span>;</div>
+    <div class="info-box red"><div class="box-label">Achtung: UPDATE ohne WHERE</div><p>UPDATE ohne WHERE-Klausel &auml;ndert <strong>alle</strong> Zeilen in der Tabelle. Das ist fast immer ein Fehler. Immer zuerst mit SELECT pr&uuml;fen welche Zeilen betroffen w&auml;ren.</p></div>
+
+    <h2>DELETE &ndash; Daten l&ouml;schen</h2>
+    <div class="code-block"><span class="code-lang">SQL</span><span class="cm">-- Einen bestimmten Datensatz l&ouml;schen</span>
+<span class="kw">DELETE FROM</span> <span class="tbl">mitarbeiter</span>
+<span class="kw">WHERE</span> id = <span class="num">1</span>;
+
+<span class="cm">-- Alle Azubis l&ouml;schen</span>
+<span class="kw">DELETE FROM</span> <span class="tbl">mitarbeiter</span>
+<span class="kw">WHERE</span> gehalt &lt; <span class="num">2000</span>;</div>
+    <div class="info-box red"><div class="box-label">Achtung: DELETE ohne WHERE</div><p>DELETE ohne WHERE l&ouml;scht <strong>alle</strong> Zeilen. Die Tabellenstruktur bleibt erhalten (Unterschied zu DROP TABLE), aber alle Daten sind weg. Kein Undo.</p></div>
+
+    <h2>Aggregat-Funktionen</h2>
+    <p>Aggregat-Funktionen berechnen einen Wert aus mehreren Zeilen.</p>
+    <div class="code-block"><span class="code-lang">SQL</span><span class="kw">SELECT</span> <span class="fn">COUNT</span>(*) <span class="kw">FROM</span> <span class="tbl">mitarbeiter</span>;           <span class="cm">-- Anzahl Zeilen</span>
+<span class="kw">SELECT</span> <span class="fn">SUM</span>(gehalt) <span class="kw">FROM</span> <span class="tbl">mitarbeiter</span>;         <span class="cm">-- Summe aller Geh&auml;lter</span>
+<span class="kw">SELECT</span> <span class="fn">AVG</span>(gehalt) <span class="kw">FROM</span> <span class="tbl">mitarbeiter</span>;         <span class="cm">-- Durchschnittsgehalt</span>
+<span class="kw">SELECT</span> <span class="fn">MIN</span>(gehalt) <span class="kw">FROM</span> <span class="tbl">mitarbeiter</span>;         <span class="cm">-- Kleinstes Gehalt</span>
+<span class="kw">SELECT</span> <span class="fn">MAX</span>(gehalt) <span class="kw">FROM</span> <span class="tbl">mitarbeiter</span>;         <span class="cm">-- Gr&ouml;&szlig;tes Gehalt</span></div>
+
+    <h2>GROUP BY &amp; HAVING</h2>
+    <p>GROUP BY fasst Zeilen mit demselben Wert zusammen. HAVING filtert Gruppen (wie WHERE, aber nach dem Gruppieren).</p>
+    <div class="code-block"><span class="code-lang">SQL</span><span class="cm">-- Durchschnittsgehalt pro Abteilung</span>
+<span class="kw">SELECT</span> abt_id, <span class="fn">AVG</span>(gehalt) <span class="kw">AS</span> avg_gehalt
+<span class="kw">FROM</span> <span class="tbl">mitarbeiter</span>
+<span class="kw">GROUP BY</span> abt_id;
+
+<span class="cm">-- Nur Abteilungen mit Durchschnittsgehalt &uuml;ber 3000</span>
+<span class="kw">SELECT</span> abt_id, <span class="fn">AVG</span>(gehalt) <span class="kw">AS</span> avg_gehalt
+<span class="kw">FROM</span> <span class="tbl">mitarbeiter</span>
+<span class="kw">GROUP BY</span> abt_id
+<span class="kw">HAVING</span> <span class="fn">AVG</span>(gehalt) &gt; <span class="num">3000</span>;</div>
+    <div class="info-box blue"><div class="box-label">WHERE vs. HAVING</div><p>WHERE filtert <strong>vor</strong> dem Gruppieren (einzelne Zeilen). HAVING filtert <strong>nach</strong> dem Gruppieren (Gruppen). WHERE kann keine Aggregat-Funktionen verwenden, HAVING schon.</p></div>
+
+    <h2>JOIN &ndash; Tabellen verkn&uuml;pfen</h2>
+    <p>Mit JOIN kombinierst du Daten aus mehreren Tabellen anhand einer gemeinsamen Spalte.</p>
+    <div class="code-block"><span class="code-lang">SQL</span><span class="cm">-- INNER JOIN: nur Zeilen die in BEIDEN Tabellen eine &Uuml;bereinstimmung haben</span>
+<span class="kw">SELECT</span> m.name, m.gehalt, a.bezeichnung
+<span class="kw">FROM</span> <span class="tbl">mitarbeiter</span> m
+<span class="kw">INNER JOIN</span> <span class="tbl">abteilung</span> a <span class="kw">ON</span> m.abt_id = a.id;
+
+<span class="cm">-- LEFT JOIN: alle Zeilen aus der linken Tabelle, auch ohne &Uuml;bereinstimmung</span>
+<span class="kw">SELECT</span> m.name, a.bezeichnung
+<span class="kw">FROM</span> <span class="tbl">mitarbeiter</span> m
+<span class="kw">LEFT JOIN</span> <span class="tbl">abteilung</span> a <span class="kw">ON</span> m.abt_id = a.id;
+
+<span class="cm">-- RIGHT JOIN: alle Zeilen aus der rechten Tabelle (in SQLite nicht verf&uuml;gbar)</span></div>
+    <div class="info-box yellow"><div class="box-label">Dialekt-Hinweis: RIGHT JOIN</div><p>SQLite unterst&uuml;tzt kein RIGHT JOIN. Als Workaround: Tabellen tauschen und LEFT JOIN verwenden. MySQL und PostgreSQL unterst&uuml;tzen RIGHT JOIN.</p></div>
+
+    <div class="card-grid">
+      <div class="card-item blue"><div class="card-label">INNER JOIN</div><h4>Schnittmenge</h4><p>Nur Datens&auml;tze die in beiden Tabellen eine &Uuml;bereinstimmung haben. Mitarbeiter ohne Abteilung werden nicht angezeigt.</p></div>
+      <div class="card-item green"><div class="card-label">LEFT JOIN</div><h4>Alle links, Rest wenn vorhanden</h4><p>Alle Mitarbeiter, auch die ohne Abteilung. Fehlende Abteilungsdaten erscheinen als NULL.</p></div>
+      <div class="card-item purple"><div class="card-label">RIGHT JOIN</div><h4>Alle rechts, Rest wenn vorhanden</h4><p>Alle Abteilungen, auch leere. Nicht in SQLite verf&uuml;gbar.</p></div>
+    </div>
+
+    <div class="divider"></div>
+    <div style="display:flex;gap:1rem">
+      <button class="btn-nav" onclick="showPage('m4-quiz')">&#8592; Zur&uuml;ck</button>
+      <button class="btn-nav primary" onclick="showPage('m5-terminal')">Weiter: Praxis Azubi-Chaos &#8594;</button>
+    </div>
+  </div>
+
+  <!-- MODUL 5 TERMINAL -->
+  <div class="page" id="page-m5-terminal">
+    <span class="chapter-tag tag-terminal">Modul 05 &middot; Praxis</span>
+    <h1>Praxis: Das Azubi-Chaos</h1>
+    <p class="lead">Die Datenbank steht. Jetzt geht der Alltag los &ndash; und mit ihm das Chaos. Die TowerTech GmbH hat ein bewegtes erstes Jahr. Du bist mittendrin.</p>
+    <div class="info-box blue"><div class="box-label">Hinweis</div><p>Die Datenbank startet mit vorbef&uuml;llten Tabellen. Du kannst jederzeit mit SELECT die aktuellen Daten anschauen. Das Terminal l&auml;uft unabh&auml;ngig vom DDL-Terminal in Modul 4.</p></div>
+
+    <div id="dml-tasks">
+      <div class="story-task" id="task-dml-0">
+        <div class="task-header"><span class="task-num">Aufgabe 1 von 6</span><span class="task-status" id="status-dml-0"></span></div>
+        <div class="task-story">Erster Tag. Der Chef: <em>&bdquo;Trag erstmal alle Abteilungen ein: IT (K&ouml;ln), Vertrieb (D&uuml;sseldorf) und Buchhaltung (K&ouml;ln).&ldquo;</em></div>
+        <div class="task-hint"><strong>Ziel:</strong> F&uuml;ge 3 Abteilungen in die Tabelle <code style="font-family:'DM Mono',monospace">abteilung</code> ein. Bezeichnungen: IT, Vertrieb, Buchhaltung.</div>
+      </div>
+      <div class="story-task locked" id="task-dml-1">
+        <div class="task-header"><span class="task-num">Aufgabe 2 von 6</span><span class="task-status" id="status-dml-1">&#128274; gesperrt</span></div>
+        <div class="task-story"><em>&bdquo;Jetzt trag Ben Azubi ein. Geh&ouml;rt zur IT, Gehalt 1800, E-Mail ben@towertech.de.&ldquo;</em></div>
+        <div class="task-hint"><strong>Ziel:</strong> F&uuml;ge einen Mitarbeiter namens 'Ben Azubi' in die Tabelle <code style="font-family:'DM Mono',monospace">mitarbeiter</code> ein.</div>
+      </div>
+      <div class="story-task locked" id="task-dml-2">
+        <div class="task-header"><span class="task-num">Aufgabe 3 von 6</span><span class="task-status" id="status-dml-2">&#128274; gesperrt</span></div>
+        <div class="task-story">3 Monate sp&auml;ter. <em>&bdquo;Ben hat sich gut gemacht. Heb sein Gehalt auf 2100 an.&ldquo;</em></div>
+        <div class="task-hint"><strong>Ziel:</strong> &Auml;ndere das Gehalt von 'Ben Azubi' auf 2100.00 via UPDATE.</div>
+      </div>
+      <div class="story-task locked" id="task-dml-3">
+        <div class="task-header"><span class="task-num">Aufgabe 4 von 6</span><span class="task-status" id="status-dml-3">&#128274; gesperrt</span></div>
+        <div class="task-story">Skandal im Vertrieb. <em>&bdquo;Der neue Praktikant hat den Spritpreis in der Fahrzeug-Tabelle auf 0.0001&euro; gesetzt! &Auml;nder den Preis auf 1.89 zur&uuml;ck.&ldquo;</em></div>
+        <div class="task-hint"><strong>Ziel:</strong> &Auml;ndere in der Tabelle <code style="font-family:'DM Mono',monospace">fahrzeug</code> den <code style="font-family:'DM Mono',monospace">spritpreis</code> auf 1.89 WHERE spritpreis &lt; 0.01.</div>
+      </div>
+      <div class="story-task locked" id="task-dml-4">
+        <div class="task-header"><span class="task-num">Aufgabe 5 von 6</span><span class="task-status" id="status-dml-4">&#128274; gesperrt</span></div>
+        <div class="task-story">Ende des Jahres. <em>&bdquo;Herr M&uuml;ller verlässt das Unternehmen. L&ouml;sch seinen Eintrag aus der Mitarbeiterliste.&ldquo;</em></div>
+        <div class="task-hint"><strong>Ziel:</strong> L&ouml;sche den Mitarbeiter mit dem Namen 'Klaus M&uuml;ller' aus der Tabelle <code style="font-family:'DM Mono',monospace">mitarbeiter</code>.</div>
+      </div>
+      <div class="story-task locked" id="task-dml-5">
+        <div class="task-header"><span class="task-num">Aufgabe 6 von 6 &ndash; FINALE</span><span class="task-status" id="status-dml-5">&#128274; gesperrt</span></div>
+        <div class="task-story">Ben wird nicht &uuml;bernommen. Als Rache&hellip; <em>&bdquo;Ben loggt sich ein letztes Mal ein. Er kennt den Befehl. Er tippt ihn. Die Tabelle mitarbeiter ist weg.&ldquo;</em><br><br>Deine Aufgabe: <strong>Stell die Tabelle wieder her</strong> (CREATE TABLE mitarbeiter neu anlegen). Das ist der Grund warum man Backups macht.</div>
+        <div class="task-hint"><strong>Ziel:</strong> F&uuml;hre zuerst <code style="font-family:'DM Mono',monospace">DROP TABLE mitarbeiter;</code> aus (spiel die Rolle). Dann lege die Tabelle neu an mit denselben Spalten wie in Modul 4.</div>
+      </div>
+    </div>
+
+    <div class="terminal-wrapper">
+      <div class="terminal-header">
+        <span class="terminal-dot" style="background:#ff5f57"></span>
+        <span class="terminal-dot" style="background:#febc2e"></span>
+        <span class="terminal-dot" style="background:#28c840"></span>
+        <span class="terminal-title">SQLite &middot; TowerTech GmbH &middot; DML</span>
+        <button class="terminal-reset-btn" onclick="resetTerminal('dml')">Datenbank zur&uuml;cksetzen</button>
+      </div>
+      <div class="terminal-output" id="terminal-output-dml">
+        <div class="terminal-line system">Datenbank wird vorbereitet...</div>
+      </div>
+      <div class="terminal-input-row">
+        <span class="terminal-prompt">sql&gt;</span>
+        <textarea class="terminal-input" id="terminal-input-dml" rows="2" placeholder="SQL eingeben..." onkeydown="handleTerminalKey(event,'dml')"></textarea>
+        <button class="terminal-run-btn" onclick="runSQL('dml')">Ausf&uuml;hren</button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div style="display:flex;gap:1rem">
+      <button class="btn-nav" onclick="showPage('m5-dml')">&#8592; Zur&uuml;ck</button>
+      <button class="btn-nav primary" onclick="showPage('m5-quiz')">Weiter: Quiz 5 &#8594;</button>
+    </div>
+  </div>
+
+  <!-- MODUL 5 QUIZ -->
+  <div class="page" id="page-m5-quiz">
+    <span class="chapter-tag tag-quiz">Modul 05 &middot; Quiz</span>
+    <h1>Quiz 5: DML</h1>
+    <p class="lead">8 Fragen zu SELECT, INSERT, UPDATE, DELETE, JOINs und Aggregat-Funktionen.</p>
+    <div class="quiz-container" id="quiz-m5">
+
+      <div class="quiz-question" data-q="0">
+        <div class="question-num">Frage 1 von 8</div>
+        <div class="question-text">Du willst alle Mitarbeiter anzeigen deren Gehalt zwischen 2000 und 4000 liegt. Welche WHERE-Klausel ist korrekt?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m5',0,'A')"><span class="option-letter">A</span> WHERE gehalt &gt; 2000 &lt; 4000</button>
+          <button class="quiz-option" onclick="selectOption(this,'m5',0,'B')"><span class="option-letter">B</span> WHERE gehalt BETWEEN 2000 AND 4000</button>
+          <button class="quiz-option" onclick="selectOption(this,'m5',0,'C')"><span class="option-letter">C</span> WHERE gehalt FROM 2000 TO 4000</button>
+          <button class="quiz-option" onclick="selectOption(this,'m5',0,'D')"><span class="option-letter">D</span> WHERE gehalt IN (2000, 4000)</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m5-0"></div>
+      </div>
+
+      <div class="quiz-question" data-q="1">
+        <div class="question-num">Frage 2 von 8</div>
+        <div class="question-text">Was passiert wenn du UPDATE mitarbeiter SET gehalt = 5000; ohne WHERE ausf&uuml;hrst?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m5',1,'A')"><span class="option-letter">A</span> Nur der erste Mitarbeiter wird ge&auml;ndert</button>
+          <button class="quiz-option" onclick="selectOption(this,'m5',1,'B')"><span class="option-letter">B</span> SQL gibt einen Fehler zur&uuml;ck</button>
+          <button class="quiz-option" onclick="selectOption(this,'m5',1,'C')"><span class="option-letter">C</span> Alle Mitarbeiter bekommen Gehalt 5000</button>
+          <button class="quiz-option" onclick="selectOption(this,'m5',1,'D')"><span class="option-letter">D</span> Nichts passiert, WHERE ist Pflicht</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m5-1"></div>
+      </div>
+
+      <div class="quiz-question" data-q="2">
+        <div class="question-num">Frage 3 von 8</div>
+        <div class="question-text">Was ist der Unterschied zwischen DELETE FROM mitarbeiter; und DROP TABLE mitarbeiter;?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m5',2,'A')"><span class="option-letter">A</span> Kein Unterschied, beide l&ouml;schen alles</button>
+          <button class="quiz-option" onclick="selectOption(this,'m5',2,'B')"><span class="option-letter">B</span> DELETE l&ouml;scht alle Daten aber beh&auml;lt die Tabellenstruktur, DROP l&ouml;scht beides</button>
+          <button class="quiz-option" onclick="selectOption(this,'m5',2,'C')"><span class="option-letter">C</span> DROP l&ouml;scht nur die Daten, DELETE auch die Struktur</button>
+          <button class="quiz-option" onclick="selectOption(this,'m5',2,'D')"><span class="option-letter">D</span> DELETE ist r&uuml;ckg&auml;ngig machbar, DROP nicht</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m5-2"></div>
+      </div>
+
+      <div class="quiz-question" data-q="3">
+        <div class="question-num">Frage 4 von 8</div>
+        <div class="question-text">Du willst den Durchschnitt der Geh&auml;lter pro Abteilung berechnen, aber nur f&uuml;r Abteilungen wo der Durchschnitt &uuml;ber 3000 liegt. Welche Kombination ist korrekt?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m5',3,'A')"><span class="option-letter">A</span> WHERE AVG(gehalt) &gt; 3000 GROUP BY abt_id</button>
+          <button class="quiz-option" onclick="selectOption(this,'m5',3,'B')"><span class="option-letter">B</span> GROUP BY abt_id WHERE AVG(gehalt) &gt; 3000</button>
+          <button class="quiz-option" onclick="selectOption(this,'m5',3,'C')"><span class="option-letter">C</span> GROUP BY abt_id HAVING AVG(gehalt) &gt; 3000</button>
+          <button class="quiz-option" onclick="selectOption(this,'m5',3,'D')"><span class="option-letter">D</span> HAVING AVG(gehalt) &gt; 3000 ohne GROUP BY</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m5-3"></div>
+      </div>
+
+      <div class="quiz-question" data-q="4">
+        <div class="question-num">Frage 5 von 8</div>
+        <div class="question-text">Was gibt ein INNER JOIN zur&uuml;ck?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m5',4,'A')"><span class="option-letter">A</span> Alle Zeilen aus beiden Tabellen, auch ohne &Uuml;bereinstimmung</button>
+          <button class="quiz-option" onclick="selectOption(this,'m5',4,'B')"><span class="option-letter">B</span> Nur Zeilen die in beiden Tabellen eine &Uuml;bereinstimmung haben</button>
+          <button class="quiz-option" onclick="selectOption(this,'m5',4,'C')"><span class="option-letter">C</span> Alle Zeilen aus der linken Tabelle, auch ohne &Uuml;bereinstimmung</button>
+          <button class="quiz-option" onclick="selectOption(this,'m5',4,'D')"><span class="option-letter">D</span> Nur die erste Zeile jeder Tabelle</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m5-4"></div>
+      </div>
+
+      <div class="quiz-question" data-q="5">
+        <div class="question-num">Frage 6 von 8</div>
+        <div class="question-text">Welche Funktion z&auml;hlt die Anzahl der Zeilen in einer Tabelle?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m5',5,'A')"><span class="option-letter">A</span> SUM(*)</button>
+          <button class="quiz-option" onclick="selectOption(this,'m5',5,'B')"><span class="option-letter">B</span> TOTAL()</button>
+          <button class="quiz-option" onclick="selectOption(this,'m5',5,'C')"><span class="option-letter">C</span> COUNT(*)</button>
+          <button class="quiz-option" onclick="selectOption(this,'m5',5,'D')"><span class="option-letter">D</span> NUM()</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m5-5"></div>
+      </div>
+
+      <div class="quiz-question" data-q="6">
+        <div class="question-num">Frage 7 von 8</div>
+        <div class="question-text">Du willst alle Mitarbeiter deren Name mit 'A' beginnt. Welche WHERE-Klausel ist korrekt?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m5',6,'A')"><span class="option-letter">A</span> WHERE name = 'A*'</button>
+          <button class="quiz-option" onclick="selectOption(this,'m5',6,'B')"><span class="option-letter">B</span> WHERE name STARTS WITH 'A'</button>
+          <button class="quiz-option" onclick="selectOption(this,'m5',6,'C')"><span class="option-letter">C</span> WHERE name LIKE 'A%'</button>
+          <button class="quiz-option" onclick="selectOption(this,'m5',6,'D')"><span class="option-letter">D</span> WHERE name CONTAINS 'A'</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m5-6"></div>
+      </div>
+
+      <div class="quiz-question" data-q="7">
+        <div class="question-num">Frage 8 von 8</div>
+        <div class="question-text">Was ist der Unterschied zwischen WHERE und HAVING?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m5',7,'A')"><span class="option-letter">A</span> Kein Unterschied, beide filtern Zeilen</button>
+          <button class="quiz-option" onclick="selectOption(this,'m5',7,'B')"><span class="option-letter">B</span> WHERE filtert vor dem Gruppieren, HAVING filtert nach dem Gruppieren und kann Aggregat-Funktionen verwenden</button>
+          <button class="quiz-option" onclick="selectOption(this,'m5',7,'C')"><span class="option-letter">C</span> HAVING filtert einzelne Zeilen, WHERE filtert Gruppen</button>
+          <button class="quiz-option" onclick="selectOption(this,'m5',7,'D')"><span class="option-letter">D</span> WHERE ist nur f&uuml;r Text, HAVING f&uuml;r Zahlen</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m5-7"></div>
+      </div>
+
+      <div class="quiz-result" id="result-m5">
+        <div class="result-score" id="result-score-m5"></div>
+        <div class="result-label">Punkte erreicht</div>
+        <div class="result-msg" id="result-msg-m5"></div>
+        <button class="reset-btn" onclick="resetQuiz('m5')">Quiz zur&uuml;cksetzen</button>
+        <button class="btn-nav primary" style="margin-left:0.75rem" onclick="showPage('m6-dcl')">Weiter zu Modul 6 &#8594;</button>
+      </div>
+    </div>
+  </div>
+
   <div class="page" id="page-m6-dcl"><span class="chapter-tag tag-dcl">Modul 06</span><h1>DCL Befehle</h1><p class="lead">Folgt im nächsten Update.</p></div>
   <div class="page" id="page-m6-quiz"><span class="chapter-tag tag-quiz">Quiz 6</span><h1>Quiz 6</h1><p class="lead">Folgt wenn Modul 6 fertig ist.</p></div>
   <div class="page" id="page-m7-sec"><span class="chapter-tag tag-sql">Modul 07</span><h1>Sicherheit</h1><p class="lead">Folgt im nächsten Update.</p></div>
@@ -2684,6 +2983,221 @@ function resetTerminal(termId) {
 
 // SQLite beim Laden initialisieren
 initSQLite();
+
+
+// ─── QUIZ M5 DATA ───
+QUIZ_DATA.m5 = {
+  correct: ['B','C','B','C','B','C','C','B'],
+  feedback: [
+    {
+      correct: 'Richtig. BETWEEN 2000 AND 4000 gibt alle Werte von 2000 bis 4000 zurück (inklusive der Grenzen).',
+      wrong: 'Falsch. WHERE gehalt > 2000 < 4000 ist keine gültige SQL-Syntax. FROM/TO gibt es in WHERE nicht. IN prüft ob ein Wert in einer Liste vorkommt, nicht in einem Bereich. Korrekt ist BETWEEN 2000 AND 4000.'
+    },
+    {
+      correct: 'Richtig. UPDATE ohne WHERE ändert alle Zeilen. Das ist einer der gefährlichsten Fehler in SQL. Immer zuerst mit SELECT prüfen welche Zeilen betroffen wären.',
+      wrong: 'Falsch. UPDATE ohne WHERE ändert nicht nur die erste Zeile und gibt auch keinen Fehler zurück. WHERE ist keine Pflicht in SQL, aber ohne WHERE werden alle Zeilen geändert.'
+    },
+    {
+      correct: 'Richtig. DELETE FROM löscht alle Daten, behält aber die Tabellenstruktur (Spalten, Constraints bleiben). DROP TABLE löscht die Tabelle komplett inklusive Struktur.',
+      wrong: 'Falsch. Es ist genau andersherum: DELETE löscht Daten, behält Struktur. DROP löscht beides. Keiner der beiden ist rückgängig machbar ohne Backup.'
+    },
+    {
+      correct: 'Richtig. GROUP BY gruppiert die Zeilen, HAVING filtert danach die Gruppen. WHERE kann keine Aggregat-Funktionen wie AVG() verwenden, HAVING schon.',
+      wrong: 'Falsch. WHERE kann keine Aggregat-Funktionen (AVG, SUM, COUNT...) verwenden, weil es vor dem Gruppieren filtert. HAVING filtert nach GROUP BY. Die Reihenfolge ist: GROUP BY → HAVING.'
+    },
+    {
+      correct: 'Richtig. INNER JOIN gibt nur die Zeilen zurück die in beiden Tabellen eine Übereinstimmung haben. Mitarbeiter ohne Abteilung und Abteilungen ohne Mitarbeiter werden nicht angezeigt.',
+      wrong: 'Falsch. INNER JOIN gibt nur die Schnittmenge zurück. Alle Zeilen aus beiden Tabellen wäre ein FULL OUTER JOIN. Alle aus der linken Tabelle wäre LEFT JOIN.'
+    },
+    {
+      correct: 'Richtig. COUNT(*) zählt alle Zeilen, auch solche mit NULL-Werten. COUNT(spalte) zählt nur Zeilen wo die Spalte nicht NULL ist.',
+      wrong: 'Falsch. SUM() addiert Werte, TOTAL() und NUM() sind keine Standard-SQL-Funktionen. Für Zeilenanzahl ist COUNT(*) der richtige Befehl.'
+    },
+    {
+      correct: 'Richtig. LIKE mit dem Platzhalter % (beliebig viele Zeichen) ist der korrekte Weg für Mustersuche in SQL. A% bedeutet: beginnt mit A, danach beliebig viele Zeichen.',
+      wrong: "Falsch. = 'A*' ist kein gültiger SQL-Vergleich für Muster. STARTS WITH und CONTAINS sind keine Standard-SQL-Operatoren. Für Mustersuche ist LIKE mit % als Platzhalter korrekt."
+    },
+    {
+      correct: 'Richtig. WHERE filtert einzelne Zeilen vor der Gruppierung und kann keine Aggregat-Funktionen verwenden. HAVING filtert Gruppen nach GROUP BY und kann Aggregat-Funktionen wie AVG(), COUNT() verwenden.',
+      wrong: 'Falsch. WHERE und HAVING sind nicht dasselbe. HAVING filtert keine einzelnen Zeilen, WHERE filtert keine Gruppen. Der Typ des Wertes (Text/Zahl) spielt keine Rolle.'
+    }
+  ]
+};
+
+// ─── DML TERMINAL SETUP ───
+function initDMLTerminal() {
+  if (!window.SQL) {
+    setTimeout(initDMLTerminal, 500);
+    return;
+  }
+  const state = getDB('dml');
+  const db = state.db;
+  try {
+    db.run(`CREATE TABLE IF NOT EXISTS abteilung (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      bezeichnung VARCHAR(100) NOT NULL,
+      standort VARCHAR(100)
+    );`);
+    db.run(`CREATE TABLE IF NOT EXISTS mitarbeiter (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name VARCHAR(100) NOT NULL,
+      email VARCHAR(150) UNIQUE,
+      gehalt DECIMAL(10,2) DEFAULT 0.00,
+      abt_id INTEGER
+    );`);
+    db.run(`CREATE TABLE IF NOT EXISTS fahrzeug (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      kennzeichen VARCHAR(20),
+      spritpreis DECIMAL(10,4) DEFAULT 1.89
+    );`);
+    db.run(`INSERT INTO fahrzeug (kennzeichen, spritpreis) VALUES
+      ('K-TT-001', 0.0001),
+      ('D-TT-002', 0.0001);`);
+    const out = document.getElementById('terminal-output-dml');
+    out.innerHTML = '';
+    addLine('dml', 'DML-Terminal bereit. Tabellen: abteilung, mitarbeiter, fahrzeug', 'system');
+    addLine('dml', 'fahrzeug hat bereits Daten (Spritpreis-Chaos ist schon drin).', 'system');
+    addLine('dml', 'Tipp: SELECT * FROM fahrzeug; um die Ausgangslage zu sehen.', 'system');
+    state.tasks = 0;
+    state.dmlMode = true;
+  } catch(e) {
+    addLine('dml', 'Init-Fehler: ' + e.message, 'error');
+  }
+}
+
+function checkDMLTasks(termId, sql, state) {
+  if (termId !== 'dml') return;
+  const db = state.db;
+  const s = sql.toUpperCase().replace(/\s+/g, ' ').trim();
+
+  // Task 0: 3 Abteilungen eingefügt?
+  if (state.tasks === 0) {
+    try {
+      const r = db.exec("SELECT COUNT(*) FROM abteilung;");
+      if (r.length > 0 && r[0].values[0][0] >= 3) {
+        completeTask('dml', 0); state.tasks = 1;
+        addLine(termId, '\u2713 Aufgabe 1 erledigt! Abteilungen eingetragen.', 'success');
+      }
+    } catch(e) {}
+  }
+
+  // Task 1: Ben Azubi eingefügt?
+  if (state.tasks === 1) {
+    try {
+      const r = db.exec("SELECT COUNT(*) FROM mitarbeiter WHERE name LIKE '%Ben%' OR name LIKE '%Azubi%';");
+      if (r.length > 0 && r[0].values[0][0] >= 1) {
+        completeTask('dml', 1); state.tasks = 2;
+        addLine(termId, '\u2713 Aufgabe 2 erledigt! Ben Azubi ist in der Datenbank.', 'success');
+      }
+    } catch(e) {}
+  }
+
+  // Task 2: Bens Gehalt auf 2100 geändert?
+  if (state.tasks === 2) {
+    try {
+      const r = db.exec("SELECT gehalt FROM mitarbeiter WHERE name LIKE '%Ben%';");
+      if (r.length > 0 && r[0].values.some(v => parseFloat(v[0]) >= 2100)) {
+        completeTask('dml', 2); state.tasks = 3;
+        addLine(termId, '\u2713 Aufgabe 3 erledigt! Gehalt angepasst.', 'success');
+      }
+    } catch(e) {}
+  }
+
+  // Task 3: Spritpreis korrigiert?
+  if (state.tasks === 3) {
+    try {
+      const r = db.exec("SELECT COUNT(*) FROM fahrzeug WHERE spritpreis < 0.01;");
+      if (r.length > 0 && r[0].values[0][0] === 0) {
+        completeTask('dml', 3); state.tasks = 4;
+        addLine(termId, '\u2713 Aufgabe 4 erledigt! Spritpreis-Katastrophe behoben.', 'success');
+      }
+    } catch(e) {}
+  }
+
+  // Task 4: Klaus Müller gelöscht?
+  if (state.tasks === 4 && (s.includes('DELETE') && s.includes('MITARBEITER'))) {
+    try {
+      const r = db.exec("SELECT COUNT(*) FROM mitarbeiter WHERE name LIKE '%M%ller%' OR name LIKE '%Klaus%';");
+      if (r.length === 0 || r[0].values[0][0] === 0) {
+        completeTask('dml', 4); state.tasks = 5;
+        addLine(termId, '\u2713 Aufgabe 5 erledigt! Auf Wiedersehen, Herr Müller.', 'success');
+      }
+    } catch(e) {}
+  }
+
+  // Task 5: DROP + CREATE mitarbeiter
+  if (state.tasks === 5) {
+    if (s.includes('DROP TABLE') && s.includes('MITARBEITER')) {
+      addLine(termId, '\u26A0 Ben hat die Tabelle gelöscht... Das ist der Grund für Backups.', 'error');
+    }
+    try {
+      const r = db.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='mitarbeiter';");
+      if (r.length > 0 && r[0].values.length > 0 && s.includes('CREATE TABLE') && s.includes('MITARBEITER')) {
+        completeTask('dml', 5); state.tasks = 6;
+        addLine(termId, '\u2713 Aufgabe 6 erledigt! Tabelle wiederhergestellt. Backup wäre schneller gewesen. \U0001F603', 'success');
+      }
+    } catch(e) {}
+  }
+}
+
+// Originales runSQL erweitern um DML-Task-Check
+const _origRunSQL = runSQL;
+window.runSQL = function(termId) {
+  const input = document.getElementById('terminal-input-' + termId);
+  const sql = input.value.trim();
+  if (!sql) return;
+  input.value = '';
+  addLine(termId, 'sql> ' + sql, 'input');
+
+  if (!window.SQL) {
+    addLine(termId, 'Fehler: SQLite noch nicht geladen.', 'error');
+    return;
+  }
+
+  const state = getDB(termId);
+  const db = state.db;
+
+  if (sql === '.tables') {
+    try {
+      const res = db.exec("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;");
+      if (res.length === 0 || res[0].values.length === 0) {
+        addLine(termId, '(keine Tabellen)', 'output');
+      } else {
+        addLine(termId, res[0].values.map(r => r[0]).join('   '), 'table-out');
+      }
+    } catch(e) { addLine(termId, 'Fehler: ' + e.message, 'error'); }
+    if (termId === 'ddl') checkDDLTasks(termId, sql, state);
+    if (termId === 'dml') checkDMLTasks(termId, sql, state);
+    return;
+  }
+
+  try {
+    const results = db.exec(sql);
+    if (results.length === 0) {
+      addLine(termId, 'OK.', 'success');
+    } else {
+      results.forEach(r => {
+        addLine(termId, r.columns.join(' | '), 'table-out');
+        addLine(termId, r.columns.map(() => '---').join('-|-'), 'output');
+        r.values.forEach(row => addLine(termId, row.map(v => v === null ? 'NULL' : v).join(' | '), 'table-out'));
+        addLine(termId, r.values.length + ' Zeile(n)', 'output');
+      });
+    }
+    if (termId === 'ddl') checkDDLTasks(termId, sql, state);
+    if (termId === 'dml') checkDMLTasks(termId, sql, state);
+  } catch(e) {
+    addLine(termId, 'Fehler: ' + e.message, 'error');
+  }
+};
+
+// DML Terminal initialisieren wenn die Seite sichtbar wird
+const _origShowPage = showPage;
+window.showPage = function(id) {
+  _origShowPage(id);
+  if (id === 'm5-terminal') {
+    setTimeout(() => initDMLTerminal(), 100);
+  }
+};
 
 </script>
 </body>
