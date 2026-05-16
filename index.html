@@ -2114,10 +2114,11 @@ abteilung:   (1, 'IT'), (2, 'Vertrieb')
         <div class="terminal-line system">SQLite 3 &middot; TowerTech GmbH Datenbank bereit.</div>
         <div class="terminal-line system">Tippe SQL-Befehle und best&auml;tige mit Enter oder klick Ausf&uuml;hren.</div>
         <div class="terminal-line system">Tipp: .tables zeigt alle Tabellen &middot; PRAGMA table_info(name); zeigt Spalten</div>
+        <div class="terminal-line system">Mehrzeilige Befehle: Shift+Enter f&uuml;r neue Zeile, Enter oder Ausf&uuml;hren zum Starten.</div>
       </div>
       <div class="terminal-input-row">
         <span class="terminal-prompt">sql&gt;</span>
-        <textarea class="terminal-input" id="terminal-input-ddl" rows="2" placeholder="SQL eingeben..." onkeydown="handleTerminalKey(event,&#39;ddl&#39;)"></textarea>
+        <textarea class="terminal-input" id="terminal-input-ddl" rows="3" placeholder="SQL eingeben... (Shift+Enter = neue Zeile, Enter = Ausführen)" onkeydown="handleTerminalKey(event,&#39;ddl&#39;)"></textarea>
         <button class="terminal-run-btn" onclick="runSQL(&#39;ddl&#39;)">Ausf&uuml;hren</button>
       </div>
     </div>
@@ -2470,7 +2471,7 @@ abteilung:   (1, 'IT'), (2, 'Vertrieb')
       </div>
       <div class="terminal-input-row">
         <span class="terminal-prompt">sql&gt;</span>
-        <textarea class="terminal-input" id="terminal-input-dml" rows="2" placeholder="SQL eingeben..." onkeydown="handleTerminalKey(event,'dml')"></textarea>
+        <textarea class="terminal-input" id="terminal-input-dml" rows="3" placeholder="SQL eingeben... (Shift+Enter = neue Zeile, Enter = Ausführen)" onkeydown="handleTerminalKey(event,'dml')"></textarea>
         <button class="terminal-run-btn" onclick="runSQL('dml')">Ausf&uuml;hren</button>
       </div>
     </div>
@@ -2701,7 +2702,7 @@ abteilung:   (1, 'IT'), (2, 'Vertrieb')
       </div>
       <div class="terminal-input-row">
         <span class="terminal-prompt">sql&gt;</span>
-        <textarea class="terminal-input" id="terminal-input-dcl" rows="2" placeholder="GRANT oder REVOKE eingeben..." onkeydown="handleDCLKey(event)"></textarea>
+        <textarea class="terminal-input" id="terminal-input-dcl" rows="3" placeholder="GRANT oder REVOKE eingeben... (Shift+Enter = neue Zeile)" onkeydown="handleDCLKey(event)"></textarea>
         <button class="terminal-run-btn" onclick="runDCL()">Ausf&uuml;hren</button>
       </div>
     </div>
@@ -3885,7 +3886,27 @@ window.runSQL = function(termId) {
     if (termId === 'ddl') checkDDLTasks(termId, sql, state);
     if (termId === 'dml') checkDMLTasks(termId, sql, state);
   } catch(e) {
-    addLine(termId, 'Fehler: ' + e.message, 'error');
+    let msg = e.message;
+    if (msg.includes('incomplete input')) {
+      msg = 'Fehler: Unvollst\u00e4ndiger Befehl. Pr\u00fcfe ob alle Klammern geschlossen sind und der Befehl mit ; endet. Tipp: Shift+Enter f\u00fcr neue Zeile.';
+    } else if (msg.includes('no such table')) {
+      const t = msg.match(/no such table: (\w+)/);
+      msg = 'Fehler: Tabelle "' + (t ? t[1] : '?') + '" existiert nicht. Mit .tables alle Tabellen anzeigen.';
+    } else if (msg.includes('no such column')) {
+      const c = msg.match(/no such column: (\S+)/);
+      msg = 'Fehler: Spalte "' + (c ? c[1] : '?') + '" existiert nicht. Mit PRAGMA table_info(tabellenname); Spalten pr\u00fcfen.';
+    } else if (msg.includes('UNIQUE constraint failed')) {
+      const col = msg.match(/UNIQUE constraint failed: (\S+)/);
+      msg = 'Fehler: Doppelter Wert verletzt UNIQUE-Constraint auf "' + (col ? col[1] : '?') + '". Dieser Wert existiert bereits.';
+    } else if (msg.includes('NOT NULL constraint failed')) {
+      const col = msg.match(/NOT NULL constraint failed: (\S+)/);
+      msg = 'Fehler: NOT NULL verletzt auf "' + (col ? col[1] : '?') + '". Das Feld ist Pflicht und darf nicht leer sein.';
+    } else if (msg.includes('syntax error')) {
+      msg = 'Syntaxfehler: ' + msg + '. Pr\u00fcfe Schreibweise und Semikolon am Ende.';
+    } else {
+      msg = 'Fehler: ' + msg;
+    }
+    addLine(termId, msg, 'error');
   }
 };
 
