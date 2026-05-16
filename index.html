@@ -1589,8 +1589,272 @@ abteilung:   (1, 'IT'), (2, 'Vertrieb')
       </div>
     </div>
   </div>
-  <div class="page" id="page-m3-typen"><span class="chapter-tag tag-dt">Modul 03</span><h1>Datentypen</h1><p class="lead">Folgt im nächsten Update.</p></div>
-  <div class="page" id="page-m3-quiz"><span class="chapter-tag tag-quiz">Quiz 3</span><h1>Quiz 3</h1><p class="lead">Folgt wenn Modul 3 fertig ist.</p></div>
+  <!-- ══════════════════════════════════════════════════
+       MODUL 3 · DATENTYPEN & CONSTRAINTS
+  ══════════════════════════════════════════════════ -->
+  <div class="page" id="page-m3-typen">
+    <span class="chapter-tag tag-dt">Modul 03 · Datentypen</span>
+    <h1>Datentypen &amp; Constraints</h1>
+    <p class="lead">Jede Spalte in einer Tabelle hat einen Datentyp. Der Datentyp legt fest, welche Art von Wert dort gespeichert werden darf. Constraints (Einschränkungen) legen zusätzliche Regeln fest.</p>
+
+    <p>Warum ist das wichtig? Wenn du einer Spalte den falschen Typ gibst, passieren Fehler die schwer zu finden sind. Zum Beispiel: Eine Postleitzahl als Zahl gespeichert verliert führende Nullen (01234 wird zu 1234). Oder ein Preis als Text kann nicht korrekt summiert werden.</p>
+
+    <h2>Numerische Datentypen</h2>
+
+    <table class="data-table">
+      <thead><tr><th>Typ</th><th>Beschreibung</th><th>Wertebereich (ca.)</th><th>Einsatz</th></tr></thead>
+      <tbody>
+        <tr><td><code style="font-family:'DM Mono',monospace">TINYINT</code></td><td>Sehr kleine Ganzzahl</td><td>-128 bis 127</td><td>Status-Flags, Boolean-Ersatz</td></tr>
+        <tr><td><code style="font-family:'DM Mono',monospace">INT</code></td><td>Ganzzahl (Integer)</td><td>ca. -2,1 Mrd. bis +2,1 Mrd.</td><td>IDs, Mengen, Zähler</td></tr>
+        <tr><td><code style="font-family:'DM Mono',monospace">BIGINT</code></td><td>Große Ganzzahl</td><td>ca. ±9,2 Quintillionen</td><td>Sehr große IDs, Timestamps</td></tr>
+        <tr><td><code style="font-family:'DM Mono',monospace">FLOAT</code></td><td>Gleitkommazahl (ungenau)</td><td>ca. ±3,4 × 10³⁸</td><td>Wissenschaftliche Werte</td></tr>
+        <tr><td><code style="font-family:'DM Mono',monospace">DOUBLE</code></td><td>Doppelt genaue Gleitkommazahl</td><td>ca. ±1,8 × 10³⁰⁸</td><td>Koordinaten, Messungen</td></tr>
+        <tr><td><code style="font-family:'DM Mono',monospace">DECIMAL(p,s)</code></td><td>Exakte Dezimalzahl</td><td>p Stellen, s davon Nachkomma</td><td>Geldbeträge, Steuern</td></tr>
+      </tbody>
+    </table>
+
+    <div class="info-box red">
+      <div class="box-label">Wichtig: Geldbeträge</div>
+      <p>Für Geldbeträge niemals <code style="font-family:'DM Mono',monospace">FLOAT</code> oder <code style="font-family:'DM Mono',monospace">DOUBLE</code> verwenden. Diese Typen haben Rundungsfehler. <code style="font-family:'DM Mono',monospace">0.1 + 0.2</code> ergibt in Gleitkomma nicht exakt <code style="font-family:'DM Mono',monospace">0.3</code>. Für Preise immer <code style="font-family:'DM Mono',monospace">DECIMAL(10,2)</code> verwenden – das bedeutet 10 Stellen gesamt, 2 davon Nachkommastellen.</p>
+    </div>
+
+    <h2>Text-Datentypen</h2>
+
+    <table class="data-table">
+      <thead><tr><th>Typ</th><th>Beschreibung</th><th>Max. Länge</th><th>Einsatz</th></tr></thead>
+      <tbody>
+        <tr><td><code style="font-family:'DM Mono',monospace">CHAR(n)</code></td><td>Feste Zeichenlänge, immer n Zeichen</td><td>255 Zeichen</td><td>Ländercodes (DE, US), feste Kürzel</td></tr>
+        <tr><td><code style="font-family:'DM Mono',monospace">VARCHAR(n)</code></td><td>Variable Zeichenlänge, max. n Zeichen</td><td>65.535 Zeichen</td><td>Namen, E-Mails, Beschreibungen</td></tr>
+        <tr><td><code style="font-family:'DM Mono',monospace">TEXT</code></td><td>Langer Fließtext</td><td>65.535 Zeichen</td><td>Kommentare, Artikeltexte</td></tr>
+        <tr><td><code style="font-family:'DM Mono',monospace">MEDIUMTEXT</code></td><td>Sehr langer Text</td><td>ca. 16 MB</td><td>HTML-Inhalte, große Texte</td></tr>
+        <tr><td><code style="font-family:'DM Mono',monospace">LONGTEXT</code></td><td>Extrem langer Text</td><td>ca. 4 GB</td><td>Logs, sehr große Dokumente</td></tr>
+      </tbody>
+    </table>
+
+    <div class="info-box blue">
+      <div class="box-label">CHAR vs. VARCHAR</div>
+      <p><code style="font-family:'DM Mono',monospace">CHAR(10)</code> reserviert immer 10 Zeichen, auch wenn der Wert kürzer ist (wird mit Leerzeichen aufgefüllt). <code style="font-family:'DM Mono',monospace">VARCHAR(10)</code> reserviert nur so viel Platz wie nötig, maximal 10. Für feste Längen wie ISO-Ländercodes ist CHAR effizienter. Für variable Texte ist VARCHAR die bessere Wahl.</p>
+    </div>
+
+    <h2>Datum & Zeit</h2>
+
+    <table class="data-table">
+      <thead><tr><th>Typ</th><th>Format</th><th>Einsatz</th></tr></thead>
+      <tbody>
+        <tr><td><code style="font-family:'DM Mono',monospace">DATE</code></td><td>YYYY-MM-DD</td><td>Geburtstage, Vertragsdaten</td></tr>
+        <tr><td><code style="font-family:'DM Mono',monospace">TIME</code></td><td>HH:MM:SS</td><td>Uhrzeiten, Arbeitszeiten</td></tr>
+        <tr><td><code style="font-family:'DM Mono',monospace">DATETIME</code></td><td>YYYY-MM-DD HH:MM:SS</td><td>Erstellungszeitpunkte, Logs</td></tr>
+        <tr><td><code style="font-family:'DM Mono',monospace">TIMESTAMP</code></td><td>Sekunden seit 01.01.1970</td><td>Automatische Zeitstempel</td></tr>
+        <tr><td><code style="font-family:'DM Mono',monospace">YEAR</code></td><td>YYYY</td><td>Jahrgang, Modelljahr</td></tr>
+      </tbody>
+    </table>
+
+    <div class="info-box yellow">
+      <div class="box-label">Dialekt-Hinweis: SQLite</div>
+      <p>SQLite hat keine eigenen Datums-Typen. Datumsangaben werden als TEXT (im Format <code style="font-family:'DM Mono',monospace">YYYY-MM-DD</code>), INTEGER (Unix-Timestamp) oder REAL gespeichert. SQLite bietet aber Datumsfunktionen wie <code style="font-family:'DM Mono',monospace">date()</code>, <code style="font-family:'DM Mono',monospace">datetime()</code> um damit zu rechnen.</p>
+    </div>
+
+    <h2>Binäre Datentypen (BLOB)</h2>
+    <p>BLOB steht für <strong>Binary Large Object (Binäres großes Objekt)</strong>. Hier werden rohe Binärdaten gespeichert, also Dinge die kein Text sind: Bilder, Dateien, Audio.</p>
+
+    <table class="data-table">
+      <thead><tr><th>Typ</th><th>Max. Größe</th><th>Einsatz</th></tr></thead>
+      <tbody>
+        <tr><td><code style="font-family:'DM Mono',monospace">TINYBLOB</code></td><td>255 Byte</td><td>Sehr kleine Binärdaten</td></tr>
+        <tr><td><code style="font-family:'DM Mono',monospace">BLOB</code></td><td>65 KB</td><td>Kleine Bilder, Icons</td></tr>
+        <tr><td><code style="font-family:'DM Mono',monospace">MEDIUMBLOB</code></td><td>16 MB</td><td>Bilder, PDFs</td></tr>
+        <tr><td><code style="font-family:'DM Mono',monospace">LONGBLOB</code></td><td>4 GB</td><td>Videos, große Dateien</td></tr>
+      </tbody>
+    </table>
+
+    <div class="info-box purple">
+      <div class="box-label">BLOB in der Praxis</div>
+      <p>In der Praxis speichert man große Dateien oft nicht direkt in der Datenbank, sondern auf einem Dateisystem (z.B. einem Server oder Cloud-Speicher). In der Datenbank steht dann nur der Pfad oder die URL zur Datei. Das ist effizienter, weil Datenbanken nicht für große Binärdaten optimiert sind.</p>
+    </div>
+
+    <h2>Sonstige Typen</h2>
+
+    <table class="data-table">
+      <thead><tr><th>Typ</th><th>Beschreibung</th><th>Einsatz</th></tr></thead>
+      <tbody>
+        <tr><td><code style="font-family:'DM Mono',monospace">BOOLEAN</code></td><td>Wahrheitswert: TRUE oder FALSE</td><td>Aktiv/Inaktiv, Ja/Nein-Felder</td></tr>
+        <tr><td><code style="font-family:'DM Mono',monospace">ENUM('a','b')</code></td><td>Einer aus einer festen Liste</td><td>Status: 'aktiv','inaktiv','gesperrt'</td></tr>
+        <tr><td><code style="font-family:'DM Mono',monospace">JSON</code></td><td>JSON-Dokument (ab MySQL 5.7)</td><td>Flexible Zusatzdaten</td></tr>
+      </tbody>
+    </table>
+
+    <div class="info-box yellow">
+      <div class="box-label">Dialekt-Hinweis: BOOLEAN</div>
+      <p>MySQL speichert BOOLEAN intern als <code style="font-family:'DM Mono',monospace">TINYINT(1)</code>. TRUE = 1, FALSE = 0. SQLite kennt keinen echten BOOLEAN-Typ, verwendet auch INTEGER (0/1). PostgreSQL hat einen echten BOOLEAN-Typ.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <h2>Constraints (Einschränkungen)</h2>
+    <p>Constraints sind Regeln die du auf Spalten oder Tabellen anwendest. Sie schützen die Datenintegrität, also dass keine unsinnigen oder widersprüchlichen Daten in die Datenbank gelangen.</p>
+
+    <div class="card-grid">
+      <div class="card-item blue">
+        <div class="card-label">PRIMARY KEY</div>
+        <h4>Primärschlüssel</h4>
+        <p>Eindeutig + NOT NULL. Jede Tabelle sollte einen haben. Identifiziert jeden Datensatz eindeutig.</p>
+      </div>
+      <div class="card-item red">
+        <div class="card-label">NOT NULL</div>
+        <h4>Pflichtfeld</h4>
+        <p>Das Feld muss einen Wert haben. NULL ist nicht erlaubt. Für alle Pflichtangaben verwenden.</p>
+      </div>
+      <div class="card-item green">
+        <div class="card-label">UNIQUE</div>
+        <h4>Eindeutig</h4>
+        <p>Kein zweiter Datensatz darf denselben Wert in dieser Spalte haben. Z.B. für E-Mail-Adressen.</p>
+      </div>
+      <div class="card-item yellow">
+        <div class="card-label">DEFAULT</div>
+        <h4>Standardwert</h4>
+        <p>Wenn beim Einfügen kein Wert angegeben wird, nimmt das Feld automatisch diesen Wert an.</p>
+      </div>
+      <div class="card-item purple">
+        <div class="card-label">CHECK</div>
+        <h4>Bedingung</h4>
+        <p>Der Wert muss eine Bedingung erfüllen. Z.B. Alter muss größer als 0 sein.</p>
+      </div>
+      <div class="card-item red">
+        <div class="card-label">FOREIGN KEY</div>
+        <h4>Fremdschlüssel</h4>
+        <p>Verweist auf den PK einer anderen Tabelle. Stellt sicher, dass keine verwaisten Verweise entstehen.</p>
+      </div>
+    </div>
+
+    <h3>Constraints in der Praxis</h3>
+    <div class="code-block">
+      <span class="code-lang">SQL (Standard)</span>
+<span class="kw">CREATE TABLE</span> <span class="tbl">mitarbeiter</span> (
+  id         <span class="fn">INT</span>          <span class="kw">PRIMARY KEY AUTO_INCREMENT</span>, <span class="cm">-- MySQL</span>
+  name       <span class="fn">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL</span>,
+  email      <span class="fn">VARCHAR</span>(<span class="num">150</span>) <span class="kw">NOT NULL UNIQUE</span>,
+  gehalt     <span class="fn">DECIMAL</span>(<span class="num">10</span>,<span class="num">2</span>) <span class="kw">DEFAULT</span> <span class="num">0.00</span>,
+  alter_j    <span class="fn">INT</span>          <span class="kw">CHECK</span> (alter_j &gt; <span class="num">0</span> <span class="kw">AND</span> alter_j &lt; <span class="num">120</span>),
+  abt_id     <span class="fn">INT</span>,
+  <span class="kw">FOREIGN KEY</span> (abt_id) <span class="kw">REFERENCES</span> <span class="tbl">abteilung</span>(id)
+);
+    </div>
+
+    <div class="info-box yellow">
+      <div class="box-label">Dialekt-Hinweis: CHECK in MySQL</div>
+      <p>CHECK-Constraints wurden in MySQL erst ab Version 8.0.16 wirklich durchgesetzt. In älteren MySQL-Versionen wurden sie zwar akzeptiert, aber ignoriert. In PostgreSQL und SQLite funktionieren sie zuverlässig.</p>
+    </div>
+
+    <div class="divider"></div>
+    <div style="display:flex;gap:1rem">
+      <button class="btn-nav" onclick="showPage('m2-quiz')">&#8592; Zurück</button>
+      <button class="btn-nav primary" onclick="showPage('m3-quiz')">Weiter: Quiz 3 &#8594;</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       MODUL 3 · QUIZ
+  ══════════════════════════════════════════════════ -->
+  <div class="page" id="page-m3-quiz">
+    <span class="chapter-tag tag-quiz">Modul 03 · Quiz</span>
+    <h1>Quiz 3: Datentypen &amp; Constraints</h1>
+    <p class="lead">7 Fragen. Lies jede genau.</p>
+
+    <div class="quiz-container" id="quiz-m3">
+
+      <div class="quiz-question" data-q="0">
+        <div class="question-num">Frage 1 von 7</div>
+        <div class="question-text">Du speicherst Produktpreise in einer Datenbank. Welcher Datentyp ist korrekt?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m3',0,'A')"><span class="option-letter">A</span> FLOAT</button>
+          <button class="quiz-option" onclick="selectOption(this,'m3',0,'B')"><span class="option-letter">B</span> VARCHAR(10)</button>
+          <button class="quiz-option" onclick="selectOption(this,'m3',0,'C')"><span class="option-letter">C</span> DECIMAL(10,2)</button>
+          <button class="quiz-option" onclick="selectOption(this,'m3',0,'D')"><span class="option-letter">D</span> INT</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m3-0"></div>
+      </div>
+
+      <div class="quiz-question" data-q="1">
+        <div class="question-num">Frage 2 von 7</div>
+        <div class="question-text">Was bedeutet BLOB?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m3',1,'A')"><span class="option-letter">A</span> Basic List Of Bytes</button>
+          <button class="quiz-option" onclick="selectOption(this,'m3',1,'B')"><span class="option-letter">B</span> Binary Large Object</button>
+          <button class="quiz-option" onclick="selectOption(this,'m3',1,'C')"><span class="option-letter">C</span> Buffered Long Object Block</button>
+          <button class="quiz-option" onclick="selectOption(this,'m3',1,'D')"><span class="option-letter">D</span> Boolean Logic Object</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m3-1"></div>
+      </div>
+
+      <div class="quiz-question" data-q="2">
+        <div class="question-num">Frage 3 von 7</div>
+        <div class="question-text">Welcher Constraint stellt sicher, dass kein Datensatz denselben E-Mail-Wert wie ein anderer haben kann?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m3',2,'A')"><span class="option-letter">A</span> NOT NULL</button>
+          <button class="quiz-option" onclick="selectOption(this,'m3',2,'B')"><span class="option-letter">B</span> PRIMARY KEY</button>
+          <button class="quiz-option" onclick="selectOption(this,'m3',2,'C')"><span class="option-letter">C</span> UNIQUE</button>
+          <button class="quiz-option" onclick="selectOption(this,'m3',2,'D')"><span class="option-letter">D</span> CHECK</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m3-2"></div>
+      </div>
+
+      <div class="quiz-question" data-q="3">
+        <div class="question-num">Frage 4 von 7</div>
+        <div class="question-text">Was ist der Unterschied zwischen CHAR(10) und VARCHAR(10)?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m3',3,'A')"><span class="option-letter">A</span> Kein Unterschied, beide speichern maximal 10 Zeichen</button>
+          <button class="quiz-option" onclick="selectOption(this,'m3',3,'B')"><span class="option-letter">B</span> CHAR reserviert immer 10 Zeichen (feste Länge), VARCHAR nur so viel wie nötig (max. 10)</button>
+          <button class="quiz-option" onclick="selectOption(this,'m3',3,'C')"><span class="option-letter">C</span> VARCHAR ist für Zahlen, CHAR für Text</button>
+          <button class="quiz-option" onclick="selectOption(this,'m3',3,'D')"><span class="option-letter">D</span> CHAR kann NULL speichern, VARCHAR nicht</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m3-3"></div>
+      </div>
+
+      <div class="quiz-question" data-q="4">
+        <div class="question-num">Frage 5 von 7</div>
+        <div class="question-text">Du willst sicherstellen, dass das Feld "alter" immer zwischen 0 und 120 liegt. Welcher Constraint ist dafür geeignet?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m3',4,'A')"><span class="option-letter">A</span> NOT NULL</button>
+          <button class="quiz-option" onclick="selectOption(this,'m3',4,'B')"><span class="option-letter">B</span> DEFAULT</button>
+          <button class="quiz-option" onclick="selectOption(this,'m3',4,'C')"><span class="option-letter">C</span> UNIQUE</button>
+          <button class="quiz-option" onclick="selectOption(this,'m3',4,'D')"><span class="option-letter">D</span> CHECK</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m3-4"></div>
+      </div>
+
+      <div class="quiz-question" data-q="5">
+        <div class="question-num">Frage 6 von 7</div>
+        <div class="question-text">Welches Datumsformat verwendet SQL für den Typ DATE?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m3',5,'A')"><span class="option-letter">A</span> DD.MM.YYYY</button>
+          <button class="quiz-option" onclick="selectOption(this,'m3',5,'B')"><span class="option-letter">B</span> MM/DD/YYYY</button>
+          <button class="quiz-option" onclick="selectOption(this,'m3',5,'C')"><span class="option-letter">C</span> YYYY-MM-DD</button>
+          <button class="quiz-option" onclick="selectOption(this,'m3',5,'D')"><span class="option-letter">D</span> DD-MM-YYYY</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m3-5"></div>
+      </div>
+
+      <div class="quiz-question" data-q="6">
+        <div class="question-num">Frage 7 von 7</div>
+        <div class="question-text">Was macht der DEFAULT-Constraint?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m3',6,'A')"><span class="option-letter">A</span> Legt fest, dass das Feld nicht leer sein darf</button>
+          <button class="quiz-option" onclick="selectOption(this,'m3',6,'B')"><span class="option-letter">B</span> Setzt automatisch einen Wert wenn beim Einfügen keiner angegeben wird</button>
+          <button class="quiz-option" onclick="selectOption(this,'m3',6,'C')"><span class="option-letter">C</span> Stellt sicher, dass alle Werte eindeutig sind</button>
+          <button class="quiz-option" onclick="selectOption(this,'m3',6,'D')"><span class="option-letter">D</span> Löscht den Wert nach einer bestimmten Zeit</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m3-6"></div>
+      </div>
+
+      <div class="quiz-result" id="result-m3">
+        <div class="result-score" id="result-score-m3"></div>
+        <div class="result-label">Punkte erreicht</div>
+        <div class="result-msg" id="result-msg-m3"></div>
+        <button class="reset-btn" onclick="resetQuiz('m3')">Quiz zurücksetzen</button>
+        <button class="btn-nav primary" style="margin-left:0.75rem" onclick="showPage('m4-ddl')">Weiter zu Modul 4 &#8594;</button>
+      </div>
+    </div>
+  </div>
   <div class="page" id="page-m4-ddl"><span class="chapter-tag tag-ddl">Modul 04</span><h1>DDL Befehle</h1><p class="lead">Folgt im nächsten Update.</p></div>
   <div class="page" id="page-m4-terminal"><span class="chapter-tag tag-terminal">Modul 04</span><h1>Praxis: Firma aufbauen</h1><p class="lead">Folgt im nächsten Update.</p></div>
   <div class="page" id="page-m4-quiz"><span class="chapter-tag tag-quiz">Quiz 4</span><h1>Quiz 4</h1><p class="lead">Folgt wenn Modul 4 fertig ist.</p></div>
@@ -1669,6 +1933,39 @@ function prevPage() {
 
 // ─── QUIZ LOGIC ───
 const QUIZ_DATA = {
+  m3: {
+    correct: ['C','B','C','B','D','C','B'],
+    feedback: [
+      {
+        correct: 'Richtig. DECIMAL(10,2) ist der korrekte Typ für Geldbeträge: exakte Darstellung, 10 Stellen gesamt, 2 Nachkommastellen. FLOAT und DOUBLE haben Rundungsfehler und sind für Geld ungeeignet.',
+        wrong: 'Falsch. FLOAT und DOUBLE haben binäre Rundungsfehler – 0.1 + 0.2 ergibt nicht exakt 0.3. Für Preise immer DECIMAL(10,2) verwenden. VARCHAR wäre Text, INT hat keine Nachkommastellen.'
+      },
+      {
+        correct: 'Richtig. BLOB steht für Binary Large Object (Binäres großes Objekt). Es wird für rohe Binärdaten verwendet: Bilder, Dateien, Audio.',
+        wrong: 'Falsch. BLOB steht für Binary Large Object. Die anderen Optionen sind erfunden.'
+      },
+      {
+        correct: 'Richtig. UNIQUE stellt sicher, dass kein zweiter Datensatz denselben Wert in dieser Spalte hat. Ideal für E-Mail-Adressen, Benutzernamen, Artikelnummern.',
+        wrong: 'Falsch. NOT NULL verhindert nur leere Felder. PRIMARY KEY wäre auch eindeutig, aber es kann nur einen PK pro Tabelle geben. CHECK prüft Bedingungen. UNIQUE ist hier die richtige Antwort.'
+      },
+      {
+        correct: 'Richtig. CHAR(10) reserviert immer 10 Zeichen im Speicher, egal wie lang der Wert ist. VARCHAR(10) reserviert nur so viel wie der tatsächliche Wert braucht, maximal 10. Für feste Längen (z.B. ISO-Codes "DE", "US") ist CHAR effizienter.',
+        wrong: 'Falsch. CHAR und VARCHAR unterscheiden sich bei der Speicherstrategie: CHAR ist fest, VARCHAR ist variabel. Beide können Text speichern, beide erlauben NULL, und der Typ hat nichts mit Zahlen zu tun.'
+      },
+      {
+        correct: 'Richtig. CHECK erlaubt eine Bedingung zu definieren die jeder Wert erfüllen muss. Beispiel: CHECK (alter > 0 AND alter < 120). Achtung: In MySQL vor Version 8.0.16 wurde CHECK akzeptiert aber nicht durchgesetzt.',
+        wrong: 'Falsch. NOT NULL verhindert nur leere Felder. DEFAULT setzt Standardwerte. UNIQUE verhindert Duplikate. Für Wertebereiche ist CHECK der richtige Constraint.'
+      },
+      {
+        correct: 'Richtig. SQL verwendet intern das Format YYYY-MM-DD für DATE-Werte (Jahr-Monat-Tag). Das ist der ISO-8601-Standard. Beim Einfügen muss das Datum in diesem Format angegeben werden.',
+        wrong: 'Falsch. SQL verwendet YYYY-MM-DD, also zuerst das Jahr, dann Monat, dann Tag mit Bindestrichen. Das deutsche Format DD.MM.YYYY oder das amerikanische MM/DD/YYYY werden nicht direkt unterstützt.'
+      },
+      {
+        correct: 'Richtig. DEFAULT setzt automatisch einen Wert wenn beim INSERT kein Wert für diese Spalte angegeben wird. Zum Beispiel: DEFAULT 0.00 bei einem Gehalt oder DEFAULT CURRENT_TIMESTAMP bei einem Erstellungsdatum.',
+        wrong: 'Falsch. DEFAULT hat nichts mit Pflichtfeldern (NOT NULL), Eindeutigkeit (UNIQUE) oder automatischem Löschen zu tun. Er greift nur wenn beim Einfügen kein Wert angegeben wird.'
+      }
+    ]
+  },
   m2: {
     correct: ['B','C','C','C','B','B'],
     feedback: [
