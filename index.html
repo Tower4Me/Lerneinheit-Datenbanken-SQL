@@ -820,6 +820,7 @@ p strong { color: var(--text); font-weight: 600; }
 .story-task.locked {
   opacity: 0.4;
   pointer-events: none;
+  transition: opacity 0.3s ease;
 }
 .story-task.completed {
   border-color: var(--green);
@@ -3664,8 +3665,13 @@ function completeTask(termId, idx) {
   const statusEl = document.getElementById('status-' + termId + '-' + idx);
   const nextEl = document.getElementById('task-' + termId + '-' + (idx + 1));
   if (taskEl) taskEl.classList.add('completed');
-  if (statusEl) statusEl.textContent = '✓ Erledigt';
-  if (nextEl) nextEl.classList.remove('locked');
+  if (statusEl) statusEl.textContent = '\u2713 Erledigt';
+  if (nextEl) {
+    nextEl.classList.remove('locked');
+    nextEl.style.opacity = '1';
+    nextEl.style.pointerEvents = 'auto';
+    nextEl.style.transition = 'opacity 0.3s ease';
+  }
 }
 
 function resetTerminal(termId) {
@@ -4157,21 +4163,7 @@ function resetDCLTerminal() {
   }
 }
 
-// ─── BUG FIX: completeTask locked CSS ───
-// Override completeTask to also fix opacity/pointer-events
-const _origCompleteTask = completeTask;
-window.completeTask = function(termId, idx) {
-  const taskEl = document.getElementById('task-' + termId + '-' + idx);
-  const statusEl = document.getElementById('status-' + termId + '-' + idx);
-  const nextEl = document.getElementById('task-' + termId + '-' + (idx + 1));
-  if (taskEl) taskEl.classList.add('completed');
-  if (statusEl) statusEl.textContent = '\u2713 Erledigt';
-  if (nextEl) {
-    nextEl.classList.remove('locked');
-    nextEl.style.opacity = '1';
-    nextEl.style.pointerEvents = 'auto';
-  }
-};
+// completeTask bug fix applied directly to source function
 
 </script>
 </body>
