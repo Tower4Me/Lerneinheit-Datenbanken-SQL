@@ -242,11 +242,15 @@ body {
 /* ─── PAGE ─── */
 .page {
   display: none;
-  padding: 3rem 2.5rem;
-  max-width: 860px;
+  padding: 3rem 4rem;
+  max-width: 1000px;
   animation: fadeUp 0.35s ease;
 }
 .page.active { display: block; }
+
+@media (max-width: 1200px) {
+  .page { padding: 2.5rem 2.5rem; max-width: 860px; }
+}
 
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(16px); }
@@ -409,13 +413,14 @@ p strong { color: var(--text); font-weight: 600; }
   background: var(--code-bg);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 1.25rem 1.5rem;
+  padding: 2rem 1.5rem 1.25rem;
   margin: 1rem 0;
   font-family: 'DM Mono', monospace;
   font-size: 0.83rem;
   line-height: 1.8;
   overflow-x: auto;
   position: relative;
+  white-space: pre;
 }
 .code-block .code-lang {
   position: absolute;
@@ -697,9 +702,10 @@ p strong { color: var(--text); font-weight: 600; }
   .sidebar { width: 100%; min-width: unset; position: relative; height: auto; }
   .app { flex-direction: column; }
   .main { margin-left: 0; }
-  .page { padding: 1.5rem 1.25rem; }
+  .page { padding: 1.5rem 1.25rem; max-width: 100%; }
   .compare-row { grid-template-columns: 1fr; }
   .topbar { padding: 1rem 1.25rem; }
+  .card-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
