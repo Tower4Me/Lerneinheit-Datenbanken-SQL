@@ -822,6 +822,13 @@ p strong { color: var(--text); font-weight: 600; }
   pointer-events: none;
   transition: opacity 0.3s ease;
 }
+.story-task.locked .task-status::after {
+  content: '\1F512 gesperrt';
+  color: var(--yellow);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+}
 .story-task.completed {
   border-color: var(--green);
   background: rgba(0,229,160,0.04);
@@ -2093,17 +2100,17 @@ abteilung:   (1, 'IT'), (2, 'Vertrieb')
         <div class="task-hint"><strong>Ziel:</strong> Erstelle Tabelle <code style="font-family:&#39;DM Mono&#39;,monospace">abteilung</code> mit: <code style="font-family:&#39;DM Mono&#39;,monospace">id</code> (INTEGER PK AUTOINCREMENT), <code style="font-family:&#39;DM Mono&#39;,monospace">bezeichnung</code> (VARCHAR(100) NOT NULL), <code style="font-family:&#39;DM Mono&#39;,monospace">standort</code> (VARCHAR(100)).</div>
       </div>
       <div class="story-task locked" id="task-ddl-1">
-        <div class="task-header"><span class="task-num">Aufgabe 2 von 4</span><span class="task-status" id="status-ddl-1">&#128274; gesperrt</span></div>
+        <div class="task-header"><span class="task-num">Aufgabe 2 von 4</span><span class="task-status" id="status-ddl-1"></span></div>
         <div class="task-story"><em>&bdquo;Gut. Jetzt brauchen wir Mitarbeiter: Name, E-Mail (eindeutig), Gehalt (Standard 0), und zu welcher Abteilung sie geh&ouml;ren.&ldquo;</em></div>
         <div class="task-hint"><strong>Ziel:</strong> Erstelle <code style="font-family:&#39;DM Mono&#39;,monospace">mitarbeiter</code> mit: <code style="font-family:&#39;DM Mono&#39;,monospace">id</code> (INTEGER PK AUTOINCREMENT), <code style="font-family:&#39;DM Mono&#39;,monospace">name</code> (VARCHAR(100) NOT NULL), <code style="font-family:&#39;DM Mono&#39;,monospace">email</code> (VARCHAR(150) UNIQUE), <code style="font-family:&#39;DM Mono&#39;,monospace">gehalt</code> (DECIMAL(10,2) DEFAULT 0.00), <code style="font-family:&#39;DM Mono&#39;,monospace">abt_id</code> (INTEGER, FK auf abteilung.id).</div>
       </div>
       <div class="story-task locked" id="task-ddl-2">
-        <div class="task-header"><span class="task-num">Aufgabe 3 von 4</span><span class="task-status" id="status-ddl-2">&#128274; gesperrt</span></div>
+        <div class="task-header"><span class="task-num">Aufgabe 3 von 4</span><span class="task-status" id="status-ddl-2"></span></div>
         <div class="task-story"><em>&bdquo;Wir haben vergessen: jeder Mitarbeiter soll auch ein Einstellungsdatum haben. F&uuml;g die Spalte nachtr&auml;glich hinzu.&ldquo;</em></div>
         <div class="task-hint"><strong>Ziel:</strong> F&uuml;ge der Tabelle <code style="font-family:&#39;DM Mono&#39;,monospace">mitarbeiter</code> die Spalte <code style="font-family:&#39;DM Mono&#39;,monospace">einstellungsdatum</code> (DATE) hinzu via ALTER TABLE.</div>
       </div>
       <div class="story-task locked" id="task-ddl-3">
-        <div class="task-header"><span class="task-num">Aufgabe 4 von 4</span><span class="task-status" id="status-ddl-3">&#128274; gesperrt</span></div>
+        <div class="task-header"><span class="task-num">Aufgabe 4 von 4</span><span class="task-status" id="status-ddl-3"></span></div>
         <div class="task-story"><em>&bdquo;Kannst du die alte Testtabelle &lsquo;temp_daten&rsquo; l&ouml;schen? Aber nur wenn sie existiert &ndash; ich bin nicht sicher ob sie schon angelegt wurde.&ldquo;</em></div>
         <div class="task-hint"><strong>Ziel:</strong> L&ouml;sche <code style="font-family:&#39;DM Mono&#39;,monospace">temp_daten</code> falls vorhanden. Nutze <code style="font-family:&#39;DM Mono&#39;,monospace">DROP TABLE IF EXISTS</code>.</div>
       </div>
@@ -2438,27 +2445,27 @@ abteilung:   (1, 'IT'), (2, 'Vertrieb')
         <div class="task-hint"><strong>Ziel:</strong> F&uuml;ge 3 Abteilungen in die Tabelle <code style="font-family:'DM Mono',monospace">abteilung</code> ein. Bezeichnungen: IT, Vertrieb, Buchhaltung.</div>
       </div>
       <div class="story-task locked" id="task-dml-1">
-        <div class="task-header"><span class="task-num">Aufgabe 2 von 6</span><span class="task-status" id="status-dml-1">&#128274; gesperrt</span></div>
+        <div class="task-header"><span class="task-num">Aufgabe 2 von 6</span><span class="task-status" id="status-dml-1"></span></div>
         <div class="task-story"><em>&bdquo;Jetzt trag Ben Azubi ein. Geh&ouml;rt zur IT, Gehalt 1800, E-Mail ben@towertech.de.&ldquo;</em></div>
         <div class="task-hint"><strong>Ziel:</strong> F&uuml;ge einen Mitarbeiter namens 'Ben Azubi' in die Tabelle <code style="font-family:'DM Mono',monospace">mitarbeiter</code> ein.</div>
       </div>
       <div class="story-task locked" id="task-dml-2">
-        <div class="task-header"><span class="task-num">Aufgabe 3 von 6</span><span class="task-status" id="status-dml-2">&#128274; gesperrt</span></div>
+        <div class="task-header"><span class="task-num">Aufgabe 3 von 6</span><span class="task-status" id="status-dml-2"></span></div>
         <div class="task-story">3 Monate sp&auml;ter. <em>&bdquo;Ben hat sich gut gemacht. Heb sein Gehalt auf 2100 an.&ldquo;</em></div>
         <div class="task-hint"><strong>Ziel:</strong> &Auml;ndere das Gehalt von 'Ben Azubi' auf 2100.00 via UPDATE.</div>
       </div>
       <div class="story-task locked" id="task-dml-3">
-        <div class="task-header"><span class="task-num">Aufgabe 4 von 6</span><span class="task-status" id="status-dml-3">&#128274; gesperrt</span></div>
+        <div class="task-header"><span class="task-num">Aufgabe 4 von 6</span><span class="task-status" id="status-dml-3"></span></div>
         <div class="task-story">Skandal im Vertrieb. <em>&bdquo;Der neue Praktikant hat den Spritpreis in der Fahrzeug-Tabelle auf 0.0001&euro; gesetzt! &Auml;nder den Preis auf 1.89 zur&uuml;ck.&ldquo;</em></div>
         <div class="task-hint"><strong>Ziel:</strong> &Auml;ndere in der Tabelle <code style="font-family:'DM Mono',monospace">fahrzeug</code> den <code style="font-family:'DM Mono',monospace">spritpreis</code> auf 1.89 WHERE spritpreis &lt; 0.01.</div>
       </div>
       <div class="story-task locked" id="task-dml-4">
-        <div class="task-header"><span class="task-num">Aufgabe 5 von 6</span><span class="task-status" id="status-dml-4">&#128274; gesperrt</span></div>
+        <div class="task-header"><span class="task-num">Aufgabe 5 von 6</span><span class="task-status" id="status-dml-4"></span></div>
         <div class="task-story">Ende des Jahres. <em>&bdquo;Herr M&uuml;ller verlässt das Unternehmen. L&ouml;sch seinen Eintrag aus der Mitarbeiterliste.&ldquo;</em></div>
         <div class="task-hint"><strong>Ziel:</strong> L&ouml;sche den Mitarbeiter mit dem Namen 'Klaus M&uuml;ller' aus der Tabelle <code style="font-family:'DM Mono',monospace">mitarbeiter</code>.</div>
       </div>
       <div class="story-task locked" id="task-dml-5">
-        <div class="task-header"><span class="task-num">Aufgabe 6 von 6 &ndash; FINALE</span><span class="task-status" id="status-dml-5">&#128274; gesperrt</span></div>
+        <div class="task-header"><span class="task-num">Aufgabe 6 von 6 &ndash; FINALE</span><span class="task-status" id="status-dml-5"></span></div>
         <div class="task-story">Ben wird nicht &uuml;bernommen. Als Rache&hellip; <em>&bdquo;Ben loggt sich ein letztes Mal ein. Er kennt den Befehl. Er tippt ihn. Die Tabelle mitarbeiter ist weg.&ldquo;</em><br><br>Deine Aufgabe: <strong>Stell die Tabelle wieder her</strong> (CREATE TABLE mitarbeiter neu anlegen). Das ist der Grund warum man Backups macht.</div>
         <div class="task-hint"><strong>Ziel:</strong> F&uuml;hre zuerst <code style="font-family:'DM Mono',monospace">DROP TABLE mitarbeiter;</code> aus (spiel die Rolle). Dann lege die Tabelle neu an mit denselben Spalten wie in Modul 4.</div>
       </div>
@@ -2677,17 +2684,17 @@ abteilung:   (1, 'IT'), (2, 'Vertrieb')
         <div class="task-hint"><strong>Ziel:</strong> <code style="font-family:'DM Mono',monospace">GRANT SELECT ON mitarbeiter TO 'lena_azubi';</code></div>
       </div>
       <div class="story-task locked" id="task-dcl-1">
-        <div class="task-header"><span class="task-num">Aufgabe 2 von 4</span><span class="task-status" id="status-dcl-1">&#128274; gesperrt</span></div>
+        <div class="task-header"><span class="task-num">Aufgabe 2 von 4</span><span class="task-status" id="status-dcl-1"></span></div>
         <div class="task-story"><em>&bdquo;Lena darf jetzt auch neue Eintr&auml;ge hinzuf&uuml;gen. Gib ihr INSERT-Recht zus&auml;tzlich.&ldquo;</em></div>
         <div class="task-hint"><strong>Ziel:</strong> <code style="font-family:'DM Mono',monospace">GRANT INSERT ON mitarbeiter TO 'lena_azubi';</code></div>
       </div>
       <div class="story-task locked" id="task-dcl-2">
-        <div class="task-header"><span class="task-num">Aufgabe 3 von 4</span><span class="task-status" id="status-dcl-2">&#128274; gesperrt</span></div>
+        <div class="task-header"><span class="task-num">Aufgabe 3 von 4</span><span class="task-status" id="status-dcl-2"></span></div>
         <div class="task-story">Lena verlässt das Unternehmen. <em>&bdquo;Entzieh ihr alle Rechte auf mitarbeiter.&ldquo;</em></div>
         <div class="task-hint"><strong>Ziel:</strong> <code style="font-family:'DM Mono',monospace">REVOKE ALL PRIVILEGES ON mitarbeiter FROM 'lena_azubi';</code></div>
       </div>
       <div class="story-task locked" id="task-dcl-3">
-        <div class="task-header"><span class="task-num">Aufgabe 4 von 4</span><span class="task-status" id="status-dcl-3">&#128274; gesperrt</span></div>
+        <div class="task-header"><span class="task-num">Aufgabe 4 von 4</span><span class="task-status" id="status-dcl-3"></span></div>
         <div class="task-story"><em>&bdquo;Neuer Admin &lsquo;max_admin&rsquo; bekommt alle Rechte auf alle Tabellen.&ldquo;</em></div>
         <div class="task-hint"><strong>Ziel:</strong> <code style="font-family:'DM Mono',monospace">GRANT ALL PRIVILEGES ON *.* TO 'max_admin';</code></div>
       </div>
@@ -3671,6 +3678,11 @@ function completeTask(termId, idx) {
     nextEl.style.opacity = '1';
     nextEl.style.pointerEvents = 'auto';
     nextEl.style.transition = 'opacity 0.3s ease';
+    // Gesperrt-Text der nächsten Aufgabe entfernen
+    const nextStatus = document.getElementById('status-' + termId + '-' + (idx + 1));
+    if (nextStatus && nextStatus.textContent.includes('gesperrt')) {
+      nextStatus.textContent = '';
+    }
   }
 }
 
@@ -4147,7 +4159,14 @@ function completeDCLTask(idx) {
   const nextEl = document.getElementById('task-dcl-' + (idx + 1));
   if (taskEl) taskEl.classList.add('completed');
   if (statusEl) statusEl.textContent = '\u2713 Erledigt';
-  if (nextEl) { nextEl.classList.remove('locked'); nextEl.style.opacity = ''; nextEl.style.pointerEvents = ''; }
+  if (nextEl) {
+    nextEl.classList.remove('locked');
+    nextEl.style.opacity = '1';
+    nextEl.style.pointerEvents = 'auto';
+    nextEl.style.transition = 'opacity 0.3s ease';
+    const nextStatus = document.getElementById('status-dcl-' + (idx + 1));
+    if (nextStatus && nextStatus.textContent.includes('gesperrt')) nextStatus.textContent = '';
+  }
 }
 
 function resetDCLTerminal() {
