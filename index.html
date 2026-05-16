@@ -1296,16 +1296,299 @@ p strong { color: var(--text); font-weight: 600; }
   </div>
 
   <!-- ══════════════════════════════════════════════════
-       MODUL 2-7 + FINAL · PLATZHALTER
+       MODUL 2 · WAS IST SQL
   ══════════════════════════════════════════════════ -->
   <div class="page" id="page-m2-intro">
     <span class="chapter-tag tag-sql">Modul 02 · SQL Grundlagen</span>
     <h1>Was ist SQL?</h1>
-    <p class="lead">Dieser Abschnitt wird in der nächsten Version freigeschaltet.</p>
-    <div class="info-box blue"><div class="box-label">In Bearbeitung</div><p>Modul 2 folgt im nächsten Update.</p></div>
+    <p class="lead">SQL (Structured Query Language = Strukturierte Abfragesprache) ist die Sprache, mit der du mit relationalen Datenbanken kommunizierst. Du gibst Befehle, die Datenbank führt sie aus.</p>
+
+    <p>SQL wurde in den 1970er-Jahren bei IBM entwickelt und ist bis heute der Standard für relationale Datenbanken. Egal ob du mit MySQL, PostgreSQL oder SQLite arbeitest – die Grundbefehle sind immer dieselben. Nur in Details unterscheiden sich die Systeme (dazu mehr auf der nächsten Seite).</p>
+
+    <div class="info-box blue">
+      <div class="box-label">Aussprache</div>
+      <p>SQL spricht man entweder als einzelne Buchstaben "Es-Que-El" oder als Wort "Sequel" aus. Beides ist korrekt und verbreitet.</p>
+    </div>
+
+    <h2>Was kann SQL?</h2>
+    <p>SQL ist in drei Hauptbereiche unterteilt:</p>
+
+    <div class="card-grid">
+      <div class="card-item purple">
+        <div class="card-label">DDL · Data Definition Language</div>
+        <h4>Struktur definieren</h4>
+        <p>Tabellen erstellen, ändern, löschen. Du baust das Gerüst der Datenbank. <code style="font-family:'DM Mono',monospace;font-size:0.82em">CREATE, ALTER, DROP</code></p>
+      </div>
+      <div class="card-item green">
+        <div class="card-label">DML · Data Manipulation Language</div>
+        <h4>Daten bearbeiten</h4>
+        <p>Daten einfügen, lesen, ändern, löschen. Das ist der Alltag. <code style="font-family:'DM Mono',monospace;font-size:0.82em">SELECT, INSERT, UPDATE, DELETE</code></p>
+      </div>
+      <div class="card-item yellow">
+        <div class="card-label">DCL · Data Control Language</div>
+        <h4>Rechte steuern</h4>
+        <p>Wer darf was in der Datenbank tun. <code style="font-family:'DM Mono',monospace;font-size:0.82em">GRANT, REVOKE</code></p>
+      </div>
+    </div>
+
+    <div class="info-box green">
+      <div class="box-label">Merkhilfe</div>
+      <p>Stell dir eine Bibliothek vor:<br>
+      <strong>DDL</strong> = die Regale bauen und beschriften<br>
+      <strong>DML</strong> = Bücher rein-, rausstellen und suchen<br>
+      <strong>DCL</strong> = festlegen, wer Zugang bekommt</p>
+    </div>
+
+    <h2>Wie sieht SQL aus?</h2>
+    <p>SQL-Befehle lesen sich fast wie englische Sätze. Das macht die Sprache vergleichsweise einfach zu lernen:</p>
+
+    <div class="code-block">
+      <span class="code-lang">SQL</span>
+<span class="cm">-- "Zeig mir alle Mitarbeiter aus der Abteilung 3"</span>
+<span class="kw">SELECT</span> name, gehalt
+<span class="kw">FROM</span> <span class="tbl">mitarbeiter</span>
+<span class="kw">WHERE</span> abteilung_id = <span class="num">3</span>;
+
+<span class="cm">-- "Erstelle eine neue Tabelle namens 'produkte'"</span>
+<span class="kw">CREATE TABLE</span> <span class="tbl">produkte</span> (
+  id   <span class="fn">INT</span> <span class="kw">PRIMARY KEY</span>,
+  name <span class="fn">VARCHAR</span>(<span class="num">100</span>)
+);
+    </div>
+
+    <h2>Was ist eine Query?</h2>
+    <p>Eine <strong>Query (Abfrage)</strong> ist ein einzelner SQL-Befehl, den du an die Datenbank schickst. Die Datenbank verarbeitet die Query und liefert ein Ergebnis zurück. Jede Query endet mit einem Semikolon <code style="font-family:'DM Mono',monospace">;</code>.</p>
+
+    <div class="info-box yellow">
+      <div class="box-label">Groß- und Kleinschreibung</div>
+      <p>SQL-Schlüsselwörter (<code style="font-family:'DM Mono',monospace">SELECT, FROM, WHERE</code>) sind nicht case-sensitive – du kannst also auch <code style="font-family:'DM Mono',monospace">select</code> klein schreiben. Konvention ist aber Großschreibung für Keywords, damit der Code lesbarer wird. Tabellen- und Spaltennamen hingegen können je nach System case-sensitive sein.</p>
+    </div>
+
+    <div class="divider"></div>
+    <div style="display:flex;gap:1rem">
+      <button class="btn-nav" onclick="showPage('m1-quiz')">&#8592; Zurück</button>
+      <button class="btn-nav primary" onclick="showPage('m2-systeme')">Weiter: SQL-Systeme &#8594;</button>
+    </div>
   </div>
-  <div class="page" id="page-m2-systeme"><span class="chapter-tag tag-sql">Modul 02</span><h1>SQL-Systeme</h1><p class="lead">Folgt im nächsten Update.</p></div>
-  <div class="page" id="page-m2-quiz"><span class="chapter-tag tag-quiz">Quiz 2</span><h1>Quiz 2</h1><p class="lead">Folgt wenn Modul 2 fertig ist.</p></div>
+
+  <!-- ══════════════════════════════════════════════════
+       MODUL 2 · SQL-SYSTEME
+  ══════════════════════════════════════════════════ -->
+  <div class="page" id="page-m2-systeme">
+    <span class="chapter-tag tag-sql">Modul 02 · SQL Grundlagen</span>
+    <h1>SQL-Systeme im Vergleich</h1>
+    <p class="lead">SQL ist standardisiert (ISO/ANSI-Standard), aber jedes Datenbanksystem hat eigene Erweiterungen und kleine Unterschiede in der Syntax. Das nennt sich SQL-Dialekt.</p>
+
+    <div class="info-box purple">
+      <div class="box-label">Was ist ein Dialekt?</div>
+      <p>So wie Deutsch in Bayern anders klingt als in Hamburg – aber trotzdem Deutsch ist – hat jedes Datenbanksystem seinen eigenen SQL-Dialekt. Die Grundbefehle (<code style="font-family:'DM Mono',monospace">SELECT, INSERT, CREATE</code>...) funktionieren überall gleich. Bei Details wie automatisch hochzählenden IDs oder Datumsformaten gibt es aber Unterschiede.</p>
+    </div>
+
+    <h2>Die wichtigsten Systeme</h2>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>System</th><th>Einsatzgebiet</th><th>Besonderheit</th><th>Lizenz</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>MySQL</strong></td>
+          <td>Webserver, CMS (z.B. WordPress)</td>
+          <td>Sehr weit verbreitet, einfacher Einstieg</td>
+          <td>Open Source / kommerziell</td>
+        </tr>
+        <tr>
+          <td><strong>PostgreSQL</strong></td>
+          <td>Komplexe Anwendungen, Data Engineering</td>
+          <td>Sehr standards-konform, mächtige Features</td>
+          <td>Open Source</td>
+        </tr>
+        <tr>
+          <td><strong>SQLite</strong></td>
+          <td>Mobile Apps, kleine Projekte, Prototypen</td>
+          <td>Keine Installation nötig, eine einzelne Datei</td>
+          <td>Public Domain (kostenlos)</td>
+        </tr>
+        <tr>
+          <td><strong>MS SQL Server</strong></td>
+          <td>Microsoft-Umgebungen, Unternehmen</td>
+          <td>T-SQL Dialekt, gut in Windows-Infrastruktur</td>
+          <td>Kommerziell</td>
+        </tr>
+        <tr>
+          <td><strong>Oracle DB</strong></td>
+          <td>Großunternehmen, Banken</td>
+          <td>PL/SQL Dialekt, sehr leistungsstark</td>
+          <td>Kommerziell</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Wichtige Dialekt-Unterschiede</h2>
+    <p>Diese Unterschiede begegnen dir in der Praxis regelmäßig. Immer wenn hier eine Einschränkung auf ein bestimmtes System gilt, ist das gekennzeichnet.</p>
+
+    <h3>Auto-Inkrement (automatisch hochzählende ID)</h3>
+    <p>Fast jede Tabelle hat eine ID-Spalte die sich automatisch erhöht. Die Syntax dafür ist je nach System unterschiedlich:</p>
+
+    <div class="code-block">
+      <span class="code-lang">MySQL / MariaDB</span>
+<span class="kw">CREATE TABLE</span> <span class="tbl">mitarbeiter</span> (
+  id   <span class="fn">INT</span> <span class="kw">PRIMARY KEY AUTO_INCREMENT</span>,
+  name <span class="fn">VARCHAR</span>(<span class="num">100</span>)
+);
+    </div>
+
+    <div class="code-block">
+      <span class="code-lang">SQLite</span>
+<span class="kw">CREATE TABLE</span> <span class="tbl">mitarbeiter</span> (
+  id   <span class="fn">INTEGER</span> <span class="kw">PRIMARY KEY AUTOINCREMENT</span>, <span class="cm">-- kein Bindestrich!</span>
+  name <span class="fn">TEXT</span>
+);
+    </div>
+
+    <div class="code-block">
+      <span class="code-lang">PostgreSQL</span>
+<span class="kw">CREATE TABLE</span> <span class="tbl">mitarbeiter</span> (
+  id   <span class="fn">SERIAL</span> <span class="kw">PRIMARY KEY</span>, <span class="cm">-- SERIAL = automatisch hochzählend</span>
+  name <span class="fn">VARCHAR</span>(<span class="num">100</span>)
+);
+    </div>
+
+    <div class="info-box yellow">
+      <div class="box-label">Dialekt-Hinweis</div>
+      <p><code style="font-family:'DM Mono',monospace">AUTO_INCREMENT</code> ist MySQL-spezifisch. <code style="font-family:'DM Mono',monospace">AUTOINCREMENT</code> (ohne Bindestrich) ist SQLite. <code style="font-family:'DM Mono',monospace">SERIAL</code> ist PostgreSQL. Das Konzept ist dasselbe, die Syntax unterscheidet sich.</p>
+    </div>
+
+    <h3>Texte begrenzen</h3>
+    <div class="code-block">
+      <span class="code-lang">Standard SQL (alle Systeme)</span>
+<span class="cm">-- String-Werte immer in einfache Anführungszeichen</span>
+<span class="kw">WHERE</span> name = <span class="str">'Ben'</span>
+
+<span class="cm">-- Doppelte Anführungszeichen sind für Spaltennamen (nicht alle Systeme)</span>
+<span class="kw">SELECT</span> <span class="str">"name"</span> <span class="kw">FROM</span> <span class="tbl">mitarbeiter</span>; <span class="cm">-- PostgreSQL: ok / MySQL: eher nicht</span>
+    </div>
+
+    <h3>Auf dieser Plattform</h3>
+    <p>Die Terminal-Übungen hier laufen auf <strong>SQLite</strong> (direkt im Browser, keine Installation). SQLite ist ein vollwertiges SQL-System, aber schlanker als MySQL oder PostgreSQL. Wo die Syntax abweicht, ist das immer gekennzeichnet.</p>
+
+    <div class="info-box blue">
+      <div class="box-label">SQLite im Browser – wie funktioniert das?</div>
+      <p>SQLite wurde als WebAssembly (WASM = Web Assembly, eine Technologie die native Programme im Browser ausführt) portiert. Das bedeutet: eine echte SQLite-Datenbank-Engine läuft direkt in deinem Browser, ohne Server. Deine Daten verlassen dein Gerät nicht.</p>
+    </div>
+
+    <h2>Was ist ein Schema?</h2>
+    <p>Ein <strong>Schema</strong> beschreibt die Struktur einer Datenbank: welche Tabellen gibt es, welche Spalten haben sie, welche Datentypen, welche Beziehungen. Das Schema ist sozusagen der Bauplan.</p>
+
+    <div class="code-block">
+      <span class="code-lang">Schema-Beispiel (vereinfacht)</span>
+<span class="cm">-- Das Schema legt fest WIE Daten gespeichert werden</span>
+<span class="tbl">mitarbeiter</span> (id INT PK, name VARCHAR(100), abt_id INT FK)
+<span class="tbl">abteilung</span>  (id INT PK, bezeichnung VARCHAR(50))
+
+<span class="cm">-- Die Daten selbst sind der Inhalt</span>
+mitarbeiter: (1, 'Ben', 2), (2, 'Anna', 1)
+abteilung:   (1, 'IT'), (2, 'Vertrieb')
+    </div>
+
+    <div class="divider"></div>
+    <div style="display:flex;gap:1rem">
+      <button class="btn-nav" onclick="showPage('m2-intro')">&#8592; Zurück</button>
+      <button class="btn-nav primary" onclick="showPage('m2-quiz')">Weiter: Quiz 2 &#8594;</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       MODUL 2 · QUIZ
+  ══════════════════════════════════════════════════ -->
+  <div class="page" id="page-m2-quiz">
+    <span class="chapter-tag tag-quiz">Modul 02 · Quiz</span>
+    <h1>Quiz 2: SQL Grundlagen</h1>
+    <p class="lead">6 Fragen. Lies jede genau.</p>
+
+    <div class="quiz-container" id="quiz-m2">
+
+      <div class="quiz-question" data-q="0">
+        <div class="question-num">Frage 1 von 6</div>
+        <div class="question-text">Wofür steht SQL?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m2',0,'A')"><span class="option-letter">A</span> System Query Logic</button>
+          <button class="quiz-option" onclick="selectOption(this,'m2',0,'B')"><span class="option-letter">B</span> Structured Query Language</button>
+          <button class="quiz-option" onclick="selectOption(this,'m2',0,'C')"><span class="option-letter">C</span> Sequential Question Language</button>
+          <button class="quiz-option" onclick="selectOption(this,'m2',0,'D')"><span class="option-letter">D</span> Standard Query List</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m2-0"></div>
+      </div>
+
+      <div class="quiz-question" data-q="1">
+        <div class="question-num">Frage 2 von 6</div>
+        <div class="question-text">Welcher SQL-Bereich ist für das Lesen und Verändern von Daten zuständig?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m2',1,'A')"><span class="option-letter">A</span> DDL (Data Definition Language)</button>
+          <button class="quiz-option" onclick="selectOption(this,'m2',1,'B')"><span class="option-letter">B</span> DCL (Data Control Language)</button>
+          <button class="quiz-option" onclick="selectOption(this,'m2',1,'C')"><span class="option-letter">C</span> DML (Data Manipulation Language)</button>
+          <button class="quiz-option" onclick="selectOption(this,'m2',1,'D')"><span class="option-letter">D</span> DQL (Data Query Language)</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m2-1"></div>
+      </div>
+
+      <div class="quiz-question" data-q="2">
+        <div class="question-num">Frage 3 von 6</div>
+        <div class="question-text">Du möchtest eine Tabelle erstellen. Welchem SQL-Bereich gehört der CREATE TABLE-Befehl an?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m2',2,'A')"><span class="option-letter">A</span> DML</button>
+          <button class="quiz-option" onclick="selectOption(this,'m2',2,'B')"><span class="option-letter">B</span> DCL</button>
+          <button class="quiz-option" onclick="selectOption(this,'m2',2,'C')"><span class="option-letter">C</span> DDL</button>
+          <button class="quiz-option" onclick="selectOption(this,'m2',2,'D')"><span class="option-letter">D</span> Es gibt keinen speziellen Bereich dafür</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m2-2"></div>
+      </div>
+
+      <div class="quiz-question" data-q="3">
+        <div class="question-num">Frage 4 von 6</div>
+        <div class="question-text">Wie lautet das korrekte Schlüsselwort für automatisch hochzählende IDs in MySQL?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m2',3,'A')"><span class="option-letter">A</span> AUTOINCREMENT</button>
+          <button class="quiz-option" onclick="selectOption(this,'m2',3,'B')"><span class="option-letter">B</span> SERIAL</button>
+          <button class="quiz-option" onclick="selectOption(this,'m2',3,'C')"><span class="option-letter">C</span> AUTO_INCREMENT</button>
+          <button class="quiz-option" onclick="selectOption(this,'m2',3,'D')"><span class="option-letter">D</span> ID_AUTO</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m2-3"></div>
+      </div>
+
+      <div class="quiz-question" data-q="4">
+        <div class="question-num">Frage 5 von 6</div>
+        <div class="question-text">Was beschreibt ein "Schema" in einer Datenbank?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m2',4,'A')"><span class="option-letter">A</span> Die gespeicherten Daten selbst</button>
+          <button class="quiz-option" onclick="selectOption(this,'m2',4,'B')"><span class="option-letter">B</span> Den Bauplan: Tabellen, Spalten, Datentypen und Beziehungen</button>
+          <button class="quiz-option" onclick="selectOption(this,'m2',4,'C')"><span class="option-letter">C</span> Den Benutzernamen für die Datenbank</button>
+          <button class="quiz-option" onclick="selectOption(this,'m2',4,'D')"><span class="option-letter">D</span> Das Backup-Verfahren</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m2-4"></div>
+      </div>
+
+      <div class="quiz-question" data-q="5">
+        <div class="question-num">Frage 6 von 6</div>
+        <div class="question-text">Was ist ein "SQL-Dialekt"?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m2',5,'A')"><span class="option-letter">A</span> Eine veraltete Version von SQL</button>
+          <button class="quiz-option" onclick="selectOption(this,'m2',5,'B')"><span class="option-letter">B</span> Systemspezifische Erweiterungen und Abweichungen vom SQL-Standard</button>
+          <button class="quiz-option" onclick="selectOption(this,'m2',5,'C')"><span class="option-letter">C</span> SQL in einer anderen Programmiersprache</button>
+          <button class="quiz-option" onclick="selectOption(this,'m2',5,'D')"><span class="option-letter">D</span> SQL ohne Semikolon am Ende</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m2-5"></div>
+      </div>
+
+      <div class="quiz-result" id="result-m2">
+        <div class="result-score" id="result-score-m2"></div>
+        <div class="result-label">Punkte erreicht</div>
+        <div class="result-msg" id="result-msg-m2"></div>
+        <button class="reset-btn" onclick="resetQuiz('m2')">Quiz zurücksetzen</button>
+        <button class="btn-nav primary" style="margin-left:0.75rem" onclick="showPage('m3-typen')">Weiter zu Modul 3 &#8594;</button>
+      </div>
+    </div>
+  </div>
   <div class="page" id="page-m3-typen"><span class="chapter-tag tag-dt">Modul 03</span><h1>Datentypen</h1><p class="lead">Folgt im nächsten Update.</p></div>
   <div class="page" id="page-m3-quiz"><span class="chapter-tag tag-quiz">Quiz 3</span><h1>Quiz 3</h1><p class="lead">Folgt wenn Modul 3 fertig ist.</p></div>
   <div class="page" id="page-m4-ddl"><span class="chapter-tag tag-ddl">Modul 04</span><h1>DDL Befehle</h1><p class="lead">Folgt im nächsten Update.</p></div>
@@ -1386,6 +1669,35 @@ function prevPage() {
 
 // ─── QUIZ LOGIC ───
 const QUIZ_DATA = {
+  m2: {
+    correct: ['B','C','C','C','B','B'],
+    feedback: [
+      {
+        correct: 'Richtig. SQL steht für Structured Query Language, zu Deutsch: Strukturierte Abfragesprache. Der Standard wurde in den 1970er-Jahren entwickelt und ist bis heute gültig.',
+        wrong: 'Falsch. SQL steht für Structured Query Language (Strukturierte Abfragesprache). Die anderen Optionen sind erfunden.'
+      },
+      {
+        correct: 'Richtig. DML (Data Manipulation Language) ist für alle Operationen zuständig, die Daten lesen oder verändern: SELECT (lesen), INSERT (einfügen), UPDATE (ändern), DELETE (löschen).',
+        wrong: 'Falsch. DDL ist für die Struktur zuständig (Tabellen erstellen/löschen), DCL für Zugriffsrechte. DML ist der richtige Bereich für Datenoperationen. DQL ist kein offizieller SQL-Standard-Begriff.'
+      },
+      {
+        correct: 'Richtig. CREATE TABLE gehört zur DDL (Data Definition Language), weil es die Struktur der Datenbank verändert – konkret: eine neue Tabelle mit ihren Spalten definiert.',
+        wrong: 'Falsch. CREATE TABLE ist ein DDL-Befehl. DDL (Data Definition Language) ist für alles zuständig, was die Datenbankstruktur definiert oder verändert. DML wäre für Daten, DCL für Rechte.'
+      },
+      {
+        correct: 'Richtig. In MySQL lautet das Schlüsselwort AUTO_INCREMENT (mit Unterstrich). Das ist MySQL-spezifisch. SQLite verwendet AUTOINCREMENT ohne Unterstrich, PostgreSQL verwendet SERIAL.',
+        wrong: 'Falsch. AUTOINCREMENT (ohne Unterstrich) ist SQLite. SERIAL ist PostgreSQL. AUTO_INCREMENT (mit Unterstrich) ist MySQL. Das ist ein typischer Dialekt-Unterschied.'
+      },
+      {
+        correct: 'Richtig. Das Schema ist der Bauplan der Datenbank: welche Tabellen gibt es, welche Spalten, welche Datentypen, welche Beziehungen zwischen den Tabellen. Die eigentlichen Daten sind der Inhalt.',
+        wrong: 'Falsch. Das Schema enthält keine Daten. Es beschreibt nur die Struktur. Die Daten selbst liegen in den Tabellen, die nach dem Schema aufgebaut sind.'
+      },
+      {
+        correct: 'Richtig. Ein SQL-Dialekt bezeichnet die systemspezifischen Erweiterungen und kleinen Abweichungen vom ANSI/ISO-SQL-Standard. Die Kernbefehle sind überall gleich, Details wie AUTO_INCREMENT vs. SERIAL unterscheiden sich.',
+        wrong: 'Falsch. Ein Dialekt ist keine veraltete Version und hat nichts mit Programmiersprachen oder Semikolons zu tun. Es sind die systemspezifischen Unterschiede beim SQL-Standard, z.B. MySQL vs. PostgreSQL vs. SQLite.'
+      }
+    ]
+  },
   m1: {
     correct: ['B','C','B','A','C','B','C'],
     feedback: [
