@@ -2516,11 +2516,571 @@ abteilung:   (1, 'IT'), (2, 'Vertrieb')
     </div>
   </div>
 
-  <div class="page" id="page-m6-dcl"><span class="chapter-tag tag-dcl">Modul 06</span><h1>DCL Befehle</h1><p class="lead">Folgt im nächsten Update.</p></div>
-  <div class="page" id="page-m6-quiz"><span class="chapter-tag tag-quiz">Quiz 6</span><h1>Quiz 6</h1><p class="lead">Folgt wenn Modul 6 fertig ist.</p></div>
-  <div class="page" id="page-m7-sec"><span class="chapter-tag tag-sql">Modul 07</span><h1>Sicherheit</h1><p class="lead">Folgt im nächsten Update.</p></div>
-  <div class="page" id="page-m7-quiz"><span class="chapter-tag tag-quiz">Quiz 7</span><h1>Quiz 7</h1><p class="lead">Folgt wenn Modul 7 fertig ist.</p></div>
-  <div class="page" id="page-final-quiz"><span class="chapter-tag tag-quiz">Abschluss</span><h1>Gesamtquiz</h1><p class="lead">Folgt wenn alle Module fertig sind.</p></div>
+  <!-- MODUL 6 DCL -->
+  <div class="page" id="page-m6-dcl">
+    <span class="chapter-tag tag-dcl">Modul 06 &middot; DCL</span>
+    <h1>DCL &ndash; Data Control Language</h1>
+    <p class="lead">DCL (Data Control Language = Datenkontrollsprache) steuert wer was in einer Datenbank darf. Mit zwei Befehlen: GRANT (Rechte vergeben) und REVOKE (Rechte entziehen).</p>
+
+    <div class="info-box yellow"><div class="box-label">Dialekt-Hinweis: SQLite</div><p>SQLite hat kein Benutzer- und Rechtesystem. GRANT und REVOKE existieren in SQLite nicht. Wer die SQLite-Datei &ouml;ffnen kann, hat vollen Zugriff. DCL ist relevant f&uuml;r Produktionssysteme wie MySQL, PostgreSQL und MS SQL Server, die echte Benutzerverwaltung haben.</p></div>
+
+    <h2>Warum Rechteverwaltung?</h2>
+    <p>In einem Unternehmen haben verschiedene Personen unterschiedliche Berechtigungen. Ein Azubi soll Daten lesen k&ouml;nnen, aber nichts l&ouml;schen. Ein Buchhalter soll Geh&auml;lter sehen, aber keine Tabellen erstellen. Ein Admin hat alles.</p>
+    <p>Ohne Rechteverwaltung k&ouml;nnte jeder Datenbanknutzer alles &ndash; l&ouml;schen, &auml;ndern, exportieren. Das ist ein massives Sicherheitsrisiko.</p>
+
+    <div class="card-grid">
+      <div class="card-item green"><div class="card-label">GRANT</div><h4>Rechte vergeben</h4><p>Gibt einem Benutzer bestimmte Rechte auf eine Tabelle oder Datenbank. Nur ein Admin oder der Eigent&uuml;mer kann GRANT ausf&uuml;hren.</p></div>
+      <div class="card-item red"><div class="card-label">REVOKE</div><h4>Rechte entziehen</h4><p>Entzieht einem Benutzer Rechte die vorher per GRANT vergeben wurden.</p></div>
+    </div>
+
+    <h2>GRANT</h2>
+    <div class="code-block"><span class="code-lang">MySQL / PostgreSQL</span><span class="cm">-- Leserecht auf eine Tabelle</span>
+<span class="kw">GRANT</span> <span class="fn">SELECT</span> <span class="kw">ON</span> <span class="tbl">mitarbeiter</span> <span class="kw">TO</span> <span class="str">'ben_azubi'</span>;
+
+<span class="cm">-- Lese- und Schreibrecht</span>
+<span class="kw">GRANT</span> <span class="fn">SELECT</span>, <span class="fn">INSERT</span>, <span class="fn">UPDATE</span> <span class="kw">ON</span> <span class="tbl">mitarbeiter</span> <span class="kw">TO</span> <span class="str">'ben_azubi'</span>;
+
+<span class="cm">-- Alle Rechte auf eine Datenbank</span>
+<span class="kw">GRANT ALL PRIVILEGES ON</span> firma_db.* <span class="kw">TO</span> <span class="str">'admin_user'</span>;
+
+<span class="cm">-- Recht weitergeben d&uuml;rfen (WITH GRANT OPTION)</span>
+<span class="kw">GRANT</span> <span class="fn">SELECT</span> <span class="kw">ON</span> <span class="tbl">mitarbeiter</span> <span class="kw">TO</span> <span class="str">'team_lead'</span> <span class="kw">WITH GRANT OPTION</span>;</div>
+
+    <h2>REVOKE</h2>
+    <div class="code-block"><span class="code-lang">MySQL / PostgreSQL</span><span class="cm">-- Leserecht entziehen</span>
+<span class="kw">REVOKE</span> <span class="fn">SELECT</span> <span class="kw">ON</span> <span class="tbl">mitarbeiter</span> <span class="kw">FROM</span> <span class="str">'ben_azubi'</span>;
+
+<span class="cm">-- Alle Rechte entziehen</span>
+<span class="kw">REVOKE ALL PRIVILEGES ON</span> firma_db.* <span class="kw">FROM</span> <span class="str">'ben_azubi'</span>;</div>
+
+    <div class="info-box blue"><div class="box-label">Praxis-Kontext</div><p>In der Realit&auml;t arbeitet man meist mit <strong>Rollen</strong> (ROLE): Du definierst eine Rolle "azubi" mit bestimmten Rechten und weist Benutzern diese Rolle zu. Das ist flexibler als Rechte direkt an einzelne Benutzer zu vergeben. In PostgreSQL und MS SQL Server sind Rollen Standard, in MySQL ab Version 8.0 verf&uuml;gbar.</p></div>
+
+    <h2>&Uuml;bersicht: Rechte in SQL</h2>
+    <table class="data-table">
+      <thead><tr><th>Recht</th><th>Erlaubt</th><th>Typisch f&uuml;r</th></tr></thead>
+      <tbody>
+        <tr><td><code style="font-family:'DM Mono',monospace">SELECT</code></td><td>Daten lesen</td><td>Alle Benutzer</td></tr>
+        <tr><td><code style="font-family:'DM Mono',monospace">INSERT</code></td><td>Daten einf&uuml;gen</td><td>Mitarbeiter mit Schreibzugriff</td></tr>
+        <tr><td><code style="font-family:'DM Mono',monospace">UPDATE</code></td><td>Daten &auml;ndern</td><td>Mitarbeiter mit Schreibzugriff</td></tr>
+        <tr><td><code style="font-family:'DM Mono',monospace">DELETE</code></td><td>Daten l&ouml;schen</td><td>Nur Berechtigte</td></tr>
+        <tr><td><code style="font-family:'DM Mono',monospace">CREATE</code></td><td>Tabellen erstellen</td><td>Datenbankadmins</td></tr>
+        <tr><td><code style="font-family:'DM Mono',monospace">DROP</code></td><td>Tabellen l&ouml;schen</td><td>Nur Admins</td></tr>
+        <tr><td><code style="font-family:'DM Mono',monospace">ALL PRIVILEGES</code></td><td>Alles</td><td>Root/Admin</td></tr>
+      </tbody>
+    </table>
+
+    <div class="divider"></div>
+    <div style="display:flex;gap:1rem">
+      <button class="btn-nav" onclick="showPage('m5-quiz')">&#8592; Zur&uuml;ck</button>
+      <button class="btn-nav primary" onclick="showPage('m6-quiz')">Weiter: Quiz 6 &#8594;</button>
+    </div>
+  </div>
+
+  <!-- MODUL 6 QUIZ -->
+  <div class="page" id="page-m6-quiz">
+    <span class="chapter-tag tag-quiz">Modul 06 &middot; Quiz</span>
+    <h1>Quiz 6: DCL</h1>
+    <p class="lead">6 Fragen zu Zugriffsrechten in SQL.</p>
+    <div class="quiz-container" id="quiz-m6">
+
+      <div class="quiz-question" data-q="0">
+        <div class="question-num">Frage 1 von 6</div>
+        <div class="question-text">Was bedeutet DCL?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m6',0,'A')"><span class="option-letter">A</span> Data Creation Language</button>
+          <button class="quiz-option" onclick="selectOption(this,'m6',0,'B')"><span class="option-letter">B</span> Database Command List</button>
+          <button class="quiz-option" onclick="selectOption(this,'m6',0,'C')"><span class="option-letter">C</span> Data Control Language</button>
+          <button class="quiz-option" onclick="selectOption(this,'m6',0,'D')"><span class="option-letter">D</span> Dynamic Column Limit</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m6-0"></div>
+      </div>
+
+      <div class="quiz-question" data-q="1">
+        <div class="question-num">Frage 2 von 6</div>
+        <div class="question-text">Du willst dem Benutzer 'anna' nur Leserecht auf die Tabelle mitarbeiter geben. Welcher Befehl ist korrekt?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m6',1,'A')"><span class="option-letter">A</span> ALLOW SELECT ON mitarbeiter TO 'anna';</button>
+          <button class="quiz-option" onclick="selectOption(this,'m6',1,'B')"><span class="option-letter">B</span> GRANT SELECT ON mitarbeiter TO 'anna';</button>
+          <button class="quiz-option" onclick="selectOption(this,'m6',1,'C')"><span class="option-letter">C</span> SET PERMISSION SELECT FOR 'anna';</button>
+          <button class="quiz-option" onclick="selectOption(this,'m6',1,'D')"><span class="option-letter">D</span> INSERT RIGHT SELECT TO 'anna';</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m6-1"></div>
+      </div>
+
+      <div class="quiz-question" data-q="2">
+        <div class="question-num">Frage 3 von 6</div>
+        <div class="question-text">Welches Datenbanksystem hat kein eigenes Benutzer- und Rechtesystem und unterst&uuml;tzt deshalb kein GRANT/REVOKE?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m6',2,'A')"><span class="option-letter">A</span> MySQL</button>
+          <button class="quiz-option" onclick="selectOption(this,'m6',2,'B')"><span class="option-letter">B</span> PostgreSQL</button>
+          <button class="quiz-option" onclick="selectOption(this,'m6',2,'C')"><span class="option-letter">C</span> SQLite</button>
+          <button class="quiz-option" onclick="selectOption(this,'m6',2,'D')"><span class="option-letter">D</span> MS SQL Server</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m6-2"></div>
+      </div>
+
+      <div class="quiz-question" data-q="3">
+        <div class="question-num">Frage 4 von 6</div>
+        <div class="question-text">Was macht WITH GRANT OPTION bei einem GRANT-Befehl?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m6',3,'A')"><span class="option-letter">A</span> Das Recht gilt nur tempor&auml;r und l&auml;uft ab</button>
+          <button class="quiz-option" onclick="selectOption(this,'m6',3,'B')"><span class="option-letter">B</span> Der Benutzer darf das erhaltene Recht an andere Benutzer weitergeben</button>
+          <button class="quiz-option" onclick="selectOption(this,'m6',3,'C')"><span class="option-letter">C</span> Das Recht gilt nur f&uuml;r SELECT</button>
+          <button class="quiz-option" onclick="selectOption(this,'m6',3,'D')"><span class="option-letter">D</span> Der Benutzer kann das Recht selbst wieder entziehen</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m6-3"></div>
+      </div>
+
+      <div class="quiz-question" data-q="4">
+        <div class="question-num">Frage 5 von 6</div>
+        <div class="question-text">Ein Azubi soll Daten lesen und neue Eintr&auml;ge hinzuf&uuml;gen d&uuml;rfen, aber nichts &auml;ndern oder l&ouml;schen. Welcher GRANT-Befehl ist korrekt?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m6',4,'A')"><span class="option-letter">A</span> GRANT ALL PRIVILEGES ON mitarbeiter TO 'azubi';</button>
+          <button class="quiz-option" onclick="selectOption(this,'m6',4,'B')"><span class="option-letter">B</span> GRANT SELECT, INSERT ON mitarbeiter TO 'azubi';</button>
+          <button class="quiz-option" onclick="selectOption(this,'m6',4,'C')"><span class="option-letter">C</span> GRANT READ, WRITE ON mitarbeiter TO 'azubi';</button>
+          <button class="quiz-option" onclick="selectOption(this,'m6',4,'D')"><span class="option-letter">D</span> GRANT SELECT ON mitarbeiter TO 'azubi' NO DELETE;</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m6-4"></div>
+      </div>
+
+      <div class="quiz-question" data-q="5">
+        <div class="question-num">Frage 6 von 6</div>
+        <div class="question-text">Du willst dem Benutzer 'ben' alle Rechte auf die Tabelle mitarbeiter entziehen. Welcher Befehl ist korrekt?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m6',5,'A')"><span class="option-letter">A</span> DELETE GRANT FROM 'ben' ON mitarbeiter;</button>
+          <button class="quiz-option" onclick="selectOption(this,'m6',5,'B')"><span class="option-letter">B</span> REMOVE ALL FROM 'ben';</button>
+          <button class="quiz-option" onclick="selectOption(this,'m6',5,'C')"><span class="option-letter">C</span> REVOKE ALL PRIVILEGES ON mitarbeiter FROM 'ben';</button>
+          <button class="quiz-option" onclick="selectOption(this,'m6',5,'D')"><span class="option-letter">D</span> DENY ALL ON mitarbeiter TO 'ben';</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m6-5"></div>
+      </div>
+
+      <div class="quiz-result" id="result-m6">
+        <div class="result-score" id="result-score-m6"></div>
+        <div class="result-label">Punkte erreicht</div>
+        <div class="result-msg" id="result-msg-m6"></div>
+        <button class="reset-btn" onclick="resetQuiz('m6')">Quiz zur&uuml;cksetzen</button>
+        <button class="btn-nav primary" style="margin-left:0.75rem" onclick="showPage('m7-sec')">Weiter zu Modul 7 &#8594;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODUL 7 SICHERHEIT -->
+  <div class="page" id="page-m7-sec">
+    <span class="chapter-tag tag-sql">Modul 07 &middot; Sicherheit</span>
+    <h1>SQL Injection &amp; Best Practices</h1>
+    <p class="lead">SQL Injection (SQLi) ist eine der h&auml;ufigsten und gef&auml;hrlichsten Sicherheitsl&uuml;cken in Webanwendungen. Seit Jahren auf Platz 1 der OWASP Top 10 (Open Web Application Security Project = offenes Webapplikations-Sicherheitsprojekt).</p>
+
+    <h2>Was ist SQL Injection?</h2>
+    <p>SQL Injection passiert wenn Benutzereingaben ungefiltert in einen SQL-Befehl eingebaut werden. Ein Angreifer kann so eigene SQL-Befehle einschleusen und ausf&uuml;hren.</p>
+
+    <div class="info-box red"><div class="box-label">Beispiel: Verwundbarer Login</div>
+<div class="code-block"><span class="code-lang">PHP (unsicher)</span><span class="cm">// Benutzereingabe direkt in SQL eingebaut -- NIEMALS so machen</span>
+$sql = <span class="str">"SELECT * FROM users WHERE name='"</span> . $_POST[<span class="str">'name'</span>] . <span class="str">"'"</span>;
+
+<span class="cm">// Normale Eingabe: name = 'ben'</span>
+<span class="cm">// Ergebnis: SELECT * FROM users WHERE name='ben'  -- ok</span>
+
+<span class="cm">// Angreifer gibt ein: name = ' OR '1'='1</span>
+<span class="cm">// Ergebnis: SELECT * FROM users WHERE name='' OR '1'='1'</span>
+<span class="cm">// '1'='1' ist immer wahr -- gibt ALLE Benutzer zur&uuml;ck!</span></div></div>
+
+    <p>Mit SQL Injection kann ein Angreifer:</p>
+    <div class="card-grid">
+      <div class="card-item red"><div class="card-label">Daten lesen</div><h4>Datenleck</h4><p>Alle Daten aus der Datenbank auslesen, inklusive Passw&ouml;rter, Kreditkartendaten, pers&ouml;nliche Daten.</p></div>
+      <div class="card-item red"><div class="card-label">Daten manipulieren</div><h4>Manipulation</h4><p>Eintr&auml;ge &auml;ndern oder l&ouml;schen. Guthaben ver&auml;ndern, Noten f&auml;lschen, Datens&auml;tze zerst&ouml;ren.</p></div>
+      <div class="card-item red"><div class="card-label">Tabellen l&ouml;schen</div><h4>Zerst&ouml;rung</h4><p>DROP TABLE ausf&uuml;hren. Komplette Datenbankl&ouml;schung. Ohne Backup ist alles weg.</p></div>
+    </div>
+
+    <h2>Schutz: Prepared Statements</h2>
+    <p>Die wichtigste Gegenma&szlig;nahme sind <strong>Prepared Statements</strong> (vorbereitete Anweisungen). Die SQL-Struktur wird getrennt von den Daten &uuml;bergeben. Benutzereingaben k&ouml;nnen so niemals SQL-Befehle einschleusen.</p>
+
+    <div class="code-block"><span class="code-lang">PHP (sicher mit PDO)</span><span class="cm">// Prepared Statement: SQL-Struktur und Daten getrennt</span>
+$stmt = $pdo->prepare(<span class="str">"SELECT * FROM users WHERE name = ?"</span>);
+$stmt->execute([$_POST[<span class="str">'name'</span>]]);
+
+<span class="cm">// Egal was der Benutzer eingibt -- es wird als reiner Datenwert behandelt</span>
+<span class="cm">// ' OR '1'='1 wird nicht als SQL interpretiert sondern als Suchbegriff</span></div>
+
+    <div class="info-box green"><div class="box-label">Merkhilfe</div><p>Prepared Statements trennen den Bauplan (SQL) von den Zutaten (Daten). Der Bauplan steht fest, die Zutaten k&ouml;nnen keine Befehle enthalten.</p></div>
+
+    <h2>Best Practices</h2>
+
+    <h3>1. Niemals DELETE oder UPDATE ohne WHERE</h3>
+    <div class="code-block"><span class="code-lang">SQL</span><span class="cm">-- FALSCH: l&ouml;scht alle Zeilen</span>
+<span class="kw">DELETE FROM</span> <span class="tbl">mitarbeiter</span>;
+
+<span class="cm">-- RICHTIG: erst mit SELECT pr&uuml;fen, dann l&ouml;schen</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tbl">mitarbeiter</span> <span class="kw">WHERE</span> id = <span class="num">5</span>; <span class="cm">-- pr&uuml;fen</span>
+<span class="kw">DELETE FROM</span> <span class="tbl">mitarbeiter</span> <span class="kw">WHERE</span> id = <span class="num">5</span>;  <span class="cm">-- dann l&ouml;schen</span></div>
+
+    <h3>2. Minimale Rechte (Principle of Least Privilege)</h3>
+    <p>Jeder Benutzer bekommt nur die Rechte die er wirklich braucht. Ein Webshop-Benutzer braucht SELECT, INSERT, UPDATE &ndash; aber kein DROP TABLE. Ein Lesebenutzer braucht nur SELECT.</p>
+
+    <h3>3. Backups</h3>
+    <p>Regelm&auml;&szlig;ige Backups sind kein optionales Feature. Sie sind Pflicht. DROP TABLE, versehentliches DELETE, Ransomware &ndash; ohne Backup ist alles weg. Das 3-2-1-Prinzip: 3 Kopien, auf 2 verschiedenen Medien, 1 davon extern.</p>
+
+    <h3>4. Keine Fehlermeldungen nach au&szlig;en</h3>
+    <p>Datenbankfehlermeldungen im Browser geben Angreifern wertvolle Informationen &uuml;ber die Datenbankstruktur. Fehlermeldungen intern loggen, dem Benutzer nur eine generische Meldung zeigen.</p>
+
+    <h3>5. Eingaben validieren</h3>
+    <p>Auch mit Prepared Statements: Eingaben pr&uuml;fen. Eine E-Mail-Adresse sollte wie eine E-Mail-Adresse aussehen. Eine ID sollte eine Zahl sein. Je fr&uuml;her ung&uuml;ltige Eingaben abgefangen werden, desto besser.</p>
+
+    <div class="info-box blue"><div class="box-label">F&uuml;r die IHK</div><p>SQL Injection solltest du erkl&auml;ren k&ouml;nnen: Was ist es, wie funktioniert es, wie sch&uuml;tzt man sich. Prepared Statements als Schutzma&szlig;nahme kennen. Das Prinzip der minimalen Rechte (Least Privilege) benennen k&ouml;nnen.</p></div>
+
+    <div class="divider"></div>
+    <div style="display:flex;gap:1rem">
+      <button class="btn-nav" onclick="showPage('m6-quiz')">&#8592; Zur&uuml;ck</button>
+      <button class="btn-nav primary" onclick="showPage('m7-quiz')">Weiter: Quiz 7 &#8594;</button>
+    </div>
+  </div>
+
+  <!-- MODUL 7 QUIZ -->
+  <div class="page" id="page-m7-quiz">
+    <span class="chapter-tag tag-quiz">Modul 07 &middot; Quiz</span>
+    <h1>Quiz 7: Sicherheit</h1>
+    <p class="lead">6 Fragen zu SQL Injection und Sicherheits-Best-Practices.</p>
+    <div class="quiz-container" id="quiz-m7">
+
+      <div class="quiz-question" data-q="0">
+        <div class="question-num">Frage 1 von 6</div>
+        <div class="question-text">Was ist SQL Injection?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m7',0,'A')"><span class="option-letter">A</span> Eine Methode um Datenbanken zu beschleunigen</button>
+          <button class="quiz-option" onclick="selectOption(this,'m7',0,'B')"><span class="option-letter">B</span> Das Einschleusen von SQL-Befehlen &uuml;ber ungefilterte Benutzereingaben</button>
+          <button class="quiz-option" onclick="selectOption(this,'m7',0,'C')"><span class="option-letter">C</span> Eine Art Datenbankbackup</button>
+          <button class="quiz-option" onclick="selectOption(this,'m7',0,'D')"><span class="option-letter">D</span> Ein Verfahren zum Importieren von Daten</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m7-0"></div>
+      </div>
+
+      <div class="quiz-question" data-q="1">
+        <div class="question-num">Frage 2 von 6</div>
+        <div class="question-text">Was ist die wichtigste technische Ma&szlig;nahme gegen SQL Injection?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m7',1,'A')"><span class="option-letter">A</span> Lange Passw&ouml;rter f&uuml;r Datenbankbenutzer</button>
+          <button class="quiz-option" onclick="selectOption(this,'m7',1,'B')"><span class="option-letter">B</span> Prepared Statements (vorbereitete Anweisungen)</button>
+          <button class="quiz-option" onclick="selectOption(this,'m7',1,'C')"><span class="option-letter">C</span> Regelm&auml;&szlig;ige Backups</button>
+          <button class="quiz-option" onclick="selectOption(this,'m7',1,'D')"><span class="option-letter">D</span> HTTPS verwenden</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m7-1"></div>
+      </div>
+
+      <div class="quiz-question" data-q="2">
+        <div class="question-num">Frage 3 von 6</div>
+        <div class="question-text">Was bedeutet das "Principle of Least Privilege" (Prinzip der minimalen Rechte)?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m7',2,'A')"><span class="option-letter">A</span> Alle Benutzer bekommen dieselben Rechte</button>
+          <button class="quiz-option" onclick="selectOption(this,'m7',2,'B')"><span class="option-letter">B</span> Administratoren haben keine Rechte</button>
+          <button class="quiz-option" onclick="selectOption(this,'m7',2,'C')"><span class="option-letter">C</span> Jeder Benutzer bekommt nur die Rechte die er wirklich braucht, nicht mehr</button>
+          <button class="quiz-option" onclick="selectOption(this,'m7',2,'D')"><span class="option-letter">D</span> Benutzer d&uuml;rfen keine Passw&ouml;rter haben</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m7-2"></div>
+      </div>
+
+      <div class="quiz-question" data-q="3">
+        <div class="question-num">Frage 4 von 6</div>
+        <div class="question-text">Warum sollten Datenbankfehlermeldungen nicht im Browser des Benutzers angezeigt werden?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m7',3,'A')"><span class="option-letter">A</span> Weil sie zu viel Speicherplatz verbrauchen</button>
+          <button class="quiz-option" onclick="selectOption(this,'m7',3,'B')"><span class="option-letter">B</span> Weil sie Angreifern Informationen &uuml;ber die Datenbankstruktur liefern</button>
+          <button class="quiz-option" onclick="selectOption(this,'m7',3,'C')"><span class="option-letter">C</span> Weil Benutzer kein Deutsch k&ouml;nnen</button>
+          <button class="quiz-option" onclick="selectOption(this,'m7',3,'D')"><span class="option-letter">D</span> Aus rechtlichen Gr&uuml;nden</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m7-3"></div>
+      </div>
+
+      <div class="quiz-question" data-q="4">
+        <div class="question-num">Frage 5 von 6</div>
+        <div class="question-text">Was bedeutet das 3-2-1-Backup-Prinzip?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m7',4,'A')"><span class="option-letter">A</span> T&auml;glich 3 Backups, w&ouml;chentlich 2, monatlich 1</button>
+          <button class="quiz-option" onclick="selectOption(this,'m7',4,'B')"><span class="option-letter">B</span> 3 Kopien der Daten, auf 2 verschiedenen Medien, 1 davon extern</button>
+          <button class="quiz-option" onclick="selectOption(this,'m7',4,'C')"><span class="option-letter">C</span> 3 Server, 2 Datenbanken, 1 Admin</button>
+          <button class="quiz-option" onclick="selectOption(this,'m7',4,'D')"><span class="option-letter">D</span> Backup dauert maximal 3 Stunden, 2 Minuten, 1 Sekunde</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m7-4"></div>
+      </div>
+
+      <div class="quiz-question" data-q="5">
+        <div class="question-num">Frage 6 von 6</div>
+        <div class="question-text">Wie funktioniert ein Prepared Statement als Schutz gegen SQL Injection?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m7',5,'A')"><span class="option-letter">A</span> Es verschl&uuml;sselt alle Datenbankabfragen</button>
+          <button class="quiz-option" onclick="selectOption(this,'m7',5,'B')"><span class="option-letter">B</span> Es blockiert alle Sonderzeichen</button>
+          <button class="quiz-option" onclick="selectOption(this,'m7',5,'C')"><span class="option-letter">C</span> SQL-Struktur und Daten werden getrennt &uuml;bergeben, Eingaben k&ouml;nnen so keine SQL-Befehle einschleusen</button>
+          <button class="quiz-option" onclick="selectOption(this,'m7',5,'D')"><span class="option-letter">D</span> Es pr&uuml;ft ob der Benutzer eingeloggt ist</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m7-5"></div>
+      </div>
+
+      <div class="quiz-result" id="result-m7">
+        <div class="result-score" id="result-score-m7"></div>
+        <div class="result-label">Punkte erreicht</div>
+        <div class="result-msg" id="result-msg-m7"></div>
+        <button class="reset-btn" onclick="resetQuiz('m7')">Quiz zur&uuml;cksetzen</button>
+        <button class="btn-nav primary" style="margin-left:0.75rem" onclick="showPage('final-quiz')">Zum Gesamtquiz &#8594;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GESAMTQUIZ -->
+  <div class="page" id="page-final-quiz">
+    <span class="chapter-tag tag-quiz">Abschluss &middot; Gesamtquiz</span>
+    <h1>Gesamtquiz</h1>
+    <p class="lead">20 Fragen aus allen Modulen. Zeigt wo du sicher bist und wo noch Nachholbedarf besteht.</p>
+    <div class="quiz-container" id="quiz-final">
+
+      <div class="quiz-question" data-q="0">
+        <div class="question-num">Frage 1 von 20</div>
+        <div class="question-text">Was ist der Unterschied zwischen einer relationalen und einer dokumentenbasierten Datenbank?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'final',0,'A')"><span class="option-letter">A</span> Relationale Datenbanken sind neuer und besser</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',0,'B')"><span class="option-letter">B</span> Relationale DB nutzen feste Tabellen und SQL, dokumentenbasierte DB speichern flexible JSON-Dokumente ohne festes Schema</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',0,'C')"><span class="option-letter">C</span> Dokumentenbasierte DB sind nur f&uuml;r PDFs</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',0,'D')"><span class="option-letter">D</span> Kein Unterschied, beide nutzen SQL</button>
+        </div>
+        <div class="quiz-feedback" id="fb-final-0"></div>
+      </div>
+
+      <div class="quiz-question" data-q="1">
+        <div class="question-num">Frage 2 von 20</div>
+        <div class="question-text">Was garantiert das "D" in ACID?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'final',1,'A')"><span class="option-letter">A</span> Durability: abgeschlossene Transaktionen bleiben auch nach einem Systemabsturz erhalten</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',1,'B')"><span class="option-letter">B</span> Deletion: gel&ouml;schte Daten sind nicht wiederherstellbar</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',1,'C')"><span class="option-letter">C</span> Distribution: Daten werden auf mehrere Server verteilt</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',1,'D')"><span class="option-letter">D</span> Duplication: jede Transaktion wird doppelt gespeichert</button>
+        </div>
+        <div class="quiz-feedback" id="fb-final-1"></div>
+      </div>
+
+      <div class="quiz-question" data-q="2">
+        <div class="question-num">Frage 3 von 20</div>
+        <div class="question-text">Welcher Datentyp ist f&uuml;r Geldbetr&auml;ge korrekt?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'final',2,'A')"><span class="option-letter">A</span> FLOAT</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',2,'B')"><span class="option-letter">B</span> DOUBLE</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',2,'C')"><span class="option-letter">C</span> DECIMAL(10,2)</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',2,'D')"><span class="option-letter">D</span> VARCHAR(20)</button>
+        </div>
+        <div class="quiz-feedback" id="fb-final-2"></div>
+      </div>
+
+      <div class="quiz-question" data-q="3">
+        <div class="question-num">Frage 4 von 20</div>
+        <div class="question-text">Was macht ALTER TABLE?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'final',3,'A')"><span class="option-letter">A</span> L&ouml;scht eine Tabelle</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',3,'B')"><span class="option-letter">B</span> &Auml;ndert die Struktur einer bestehenden Tabelle (Spalten hinzuf&uuml;gen, umbenennen etc.)</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',3,'C')"><span class="option-letter">C</span> &Auml;ndert Daten in einer Tabelle</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',3,'D')"><span class="option-letter">D</span> Erstellt eine neue Tabelle als Kopie</button>
+        </div>
+        <div class="quiz-feedback" id="fb-final-3"></div>
+      </div>
+
+      <div class="quiz-question" data-q="4">
+        <div class="question-num">Frage 5 von 20</div>
+        <div class="question-text">Du willst alle Mitarbeiter anzeigen deren Name mit 'K' beginnt, sortiert nach Gehalt absteigend. Was ist korrekt?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'final',4,'A')"><span class="option-letter">A</span> SELECT * FROM mitarbeiter WHERE name = 'K*' SORT BY gehalt;</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',4,'B')"><span class="option-letter">B</span> SELECT * FROM mitarbeiter WHERE name LIKE 'K%' ORDER BY gehalt DESC;</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',4,'C')"><span class="option-letter">C</span> SELECT * FROM mitarbeiter LIKE name 'K%' ORDER gehalt DESC;</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',4,'D')"><span class="option-letter">D</span> SELECT * FROM mitarbeiter WHERE name STARTS 'K' ORDER BY gehalt;</button>
+        </div>
+        <div class="quiz-feedback" id="fb-final-4"></div>
+      </div>
+
+      <div class="quiz-question" data-q="5">
+        <div class="question-num">Frage 6 von 20</div>
+        <div class="question-text">Was ist der Unterschied zwischen DROP TABLE und DELETE FROM?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'final',5,'A')"><span class="option-letter">A</span> DROP l&ouml;scht Daten + Struktur, DELETE l&ouml;scht nur Daten (Struktur bleibt)</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',5,'B')"><span class="option-letter">B</span> DELETE l&ouml;scht Daten + Struktur, DROP l&ouml;scht nur Daten</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',5,'C')"><span class="option-letter">C</span> Kein Unterschied</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',5,'D')"><span class="option-letter">D</span> DROP ist r&uuml;ckg&auml;ngig, DELETE nicht</button>
+        </div>
+        <div class="quiz-feedback" id="fb-final-5"></div>
+      </div>
+
+      <div class="quiz-question" data-q="6">
+        <div class="question-num">Frage 7 von 20</div>
+        <div class="question-text">Wof&uuml;r wird GRANT verwendet?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'final',6,'A')"><span class="option-letter">A</span> Daten einf&uuml;gen</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',6,'B')"><span class="option-letter">B</span> Zugriffsrechte an Benutzer vergeben</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',6,'C')"><span class="option-letter">C</span> Tabellen erstellen</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',6,'D')"><span class="option-letter">D</span> Transaktionen best&auml;tigen</button>
+        </div>
+        <div class="quiz-feedback" id="fb-final-6"></div>
+      </div>
+
+      <div class="quiz-question" data-q="7">
+        <div class="question-num">Frage 8 von 20</div>
+        <div class="question-text">Was ist SQL Injection und wie sch&uuml;tzt man sich?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'final',7,'A')"><span class="option-letter">A</span> Ein Backup-Verfahren; Schutz durch regelm&auml;&szlig;ige Backups</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',7,'B')"><span class="option-letter">B</span> Das Einschleusen von SQL-Befehlen &uuml;ber Eingaben; Schutz durch Prepared Statements</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',7,'C')"><span class="option-letter">C</span> Ein Optimierungsverfahren; Schutz durch Indizes</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',7,'D')"><span class="option-letter">D</span> Ein Datentyp; Schutz durch DECIMAL</button>
+        </div>
+        <div class="quiz-feedback" id="fb-final-7"></div>
+      </div>
+
+      <div class="quiz-question" data-q="8">
+        <div class="question-num">Frage 9 von 20</div>
+        <div class="question-text">Was gibt INNER JOIN zur&uuml;ck?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'final',8,'A')"><span class="option-letter">A</span> Alle Zeilen aus beiden Tabellen</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',8,'B')"><span class="option-letter">B</span> Nur Zeilen die in beiden Tabellen eine &Uuml;bereinstimmung haben</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',8,'C')"><span class="option-letter">C</span> Alle Zeilen aus der linken Tabelle</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',8,'D')"><span class="option-letter">D</span> Die erste Zeile beider Tabellen</button>
+        </div>
+        <div class="quiz-feedback" id="fb-final-8"></div>
+      </div>
+
+      <div class="quiz-question" data-q="9">
+        <div class="question-num">Frage 10 von 20</div>
+        <div class="question-text">Welcher Constraint stellt sicher dass ein Feld nicht leer bleibt?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'final',9,'A')"><span class="option-letter">A</span> UNIQUE</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',9,'B')"><span class="option-letter">B</span> DEFAULT</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',9,'C')"><span class="option-letter">C</span> NOT NULL</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',9,'D')"><span class="option-letter">D</span> CHECK</button>
+        </div>
+        <div class="quiz-feedback" id="fb-final-9"></div>
+      </div>
+
+      <div class="quiz-question" data-q="10">
+        <div class="question-num">Frage 11 von 20</div>
+        <div class="question-text">Was bedeutet persistent in Bezug auf Datenspeicherung?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'final',10,'A')"><span class="option-letter">A</span> Daten sind verschl&uuml;sselt</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',10,'B')"><span class="option-letter">B</span> Daten bleiben auch nach Stromausfall erhalten</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',10,'C')"><span class="option-letter">C</span> Daten liegen im RAM</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',10,'D')"><span class="option-letter">D</span> Daten werden automatisch gel&ouml;scht</button>
+        </div>
+        <div class="quiz-feedback" id="fb-final-10"></div>
+      </div>
+
+      <div class="quiz-question" data-q="11">
+        <div class="question-num">Frage 12 von 20</div>
+        <div class="question-text">Welcher Befehl geh&ouml;rt zur DDL?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'final',11,'A')"><span class="option-letter">A</span> SELECT</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',11,'B')"><span class="option-letter">B</span> INSERT</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',11,'C')"><span class="option-letter">C</span> GRANT</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',11,'D')"><span class="option-letter">D</span> CREATE TABLE</button>
+        </div>
+        <div class="quiz-feedback" id="fb-final-11"></div>
+      </div>
+
+      <div class="quiz-question" data-q="12">
+        <div class="question-num">Frage 13 von 20</div>
+        <div class="question-text">Was ist der Unterschied zwischen WHERE und HAVING?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'final',12,'A')"><span class="option-letter">A</span> Kein Unterschied</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',12,'B')"><span class="option-letter">B</span> WHERE filtert vor dem Gruppieren, HAVING filtert nach dem Gruppieren und kann Aggregat-Funktionen nutzen</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',12,'C')"><span class="option-letter">C</span> HAVING filtert einzelne Zeilen, WHERE filtert Gruppen</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',12,'D')"><span class="option-letter">D</span> WHERE ist nur f&uuml;r Text, HAVING f&uuml;r Zahlen</button>
+        </div>
+        <div class="quiz-feedback" id="fb-final-12"></div>
+      </div>
+
+      <div class="quiz-question" data-q="13">
+        <div class="question-num">Frage 14 von 20</div>
+        <div class="question-text">Was ist ein SQL-Dialekt?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'final',13,'A')"><span class="option-letter">A</span> Eine veraltete SQL-Version</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',13,'B')"><span class="option-letter">B</span> Systemspezifische Erweiterungen und Abweichungen vom SQL-Standard</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',13,'C')"><span class="option-letter">C</span> SQL auf Englisch statt Deutsch</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',13,'D')"><span class="option-letter">D</span> SQL ohne Semikolons</button>
+        </div>
+        <div class="quiz-feedback" id="fb-final-13"></div>
+      </div>
+
+      <div class="quiz-question" data-q="14">
+        <div class="question-num">Frage 15 von 20</div>
+        <div class="question-text">Was beschreibt die dritte Normalform (3NF)?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'final',14,'A')"><span class="option-letter">A</span> Jede Zelle hat nur einen Wert</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',14,'B')"><span class="option-letter">B</span> Jede Tabelle hat einen Prim&auml;rschl&uuml;ssel</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',14,'C')"><span class="option-letter">C</span> Kein Nicht-Schl&uuml;sselfeld darf von einem anderen Nicht-Schl&uuml;sselfeld abh&auml;ngen</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',14,'D')"><span class="option-letter">D</span> Alle Spalten m&uuml;ssen NOT NULL sein</button>
+        </div>
+        <div class="quiz-feedback" id="fb-final-14"></div>
+      </div>
+
+      <div class="quiz-question" data-q="15">
+        <div class="question-num">Frage 16 von 20</div>
+        <div class="question-text">Wie pr&uuml;ft man korrekt ob ein Feld NULL ist?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'final',15,'A')"><span class="option-letter">A</span> WHERE feld = NULL</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',15,'B')"><span class="option-letter">B</span> WHERE feld == NULL</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',15,'C')"><span class="option-letter">C</span> WHERE feld IS NULL</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',15,'D')"><span class="option-letter">D</span> WHERE feld = ''</button>
+        </div>
+        <div class="quiz-feedback" id="fb-final-15"></div>
+      </div>
+
+      <div class="quiz-question" data-q="16">
+        <div class="question-num">Frage 17 von 20</div>
+        <div class="question-text">Was ist ein Index in einer Datenbank?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'final',16,'A')"><span class="option-letter">A</span> Eine Liste aller Benutzer</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',16,'B')"><span class="option-letter">B</span> Eine interne Datenstruktur die Abfragen auf bestimmte Spalten beschleunigt</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',16,'C')"><span class="option-letter">C</span> Ein Backup der Tabelle</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',16,'D')"><span class="option-letter">D</span> Der Prim&auml;rschl&uuml;ssel</button>
+        </div>
+        <div class="quiz-feedback" id="fb-final-16"></div>
+      </div>
+
+      <div class="quiz-question" data-q="17">
+        <div class="question-num">Frage 18 von 20</div>
+        <div class="question-text">Welcher JOIN-Typ ist in SQLite nicht verf&uuml;gbar?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'final',17,'A')"><span class="option-letter">A</span> INNER JOIN</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',17,'B')"><span class="option-letter">B</span> LEFT JOIN</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',17,'C')"><span class="option-letter">C</span> RIGHT JOIN</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',17,'D')"><span class="option-letter">D</span> CROSS JOIN</button>
+        </div>
+        <div class="quiz-feedback" id="fb-final-17"></div>
+      </div>
+
+      <div class="quiz-question" data-q="18">
+        <div class="question-num">Frage 19 von 20</div>
+        <div class="question-text">Was ist BLOB?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'final',18,'A')"><span class="option-letter">A</span> Ein Zahlentyp f&uuml;r gro&szlig;e Werte</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',18,'B')"><span class="option-letter">B</span> Binary Large Object &ndash; f&uuml;r bin&auml;re Daten wie Bilder oder Dateien</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',18,'C')"><span class="option-letter">C</span> Ein Datenbank-Backup-Format</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',18,'D')"><span class="option-letter">D</span> Ein SQL-Befehl zum Exportieren</button>
+        </div>
+        <div class="quiz-feedback" id="fb-final-18"></div>
+      </div>
+
+      <div class="quiz-question" data-q="19">
+        <div class="question-num">Frage 20 von 20</div>
+        <div class="question-text">Was ist der Fremdschl&uuml;ssel (FK = Foreign Key)?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'final',19,'A')"><span class="option-letter">A</span> Ein alternativer Name f&uuml;r den Prim&auml;rschl&uuml;ssel</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',19,'B')"><span class="option-letter">B</span> Ein verschl&uuml;sselter Prim&auml;rschl&uuml;ssel</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',19,'C')"><span class="option-letter">C</span> Eine Spalte die auf den Prim&auml;rschl&uuml;ssel einer anderen Tabelle verweist und so Tabellen verkn&uuml;pft</button>
+          <button class="quiz-option" onclick="selectOption(this,'final',19,'D')"><span class="option-letter">D</span> Ein Passwort f&uuml;r den Datenbankzugriff</button>
+        </div>
+        <div class="quiz-feedback" id="fb-final-19"></div>
+      </div>
+
+      <div class="quiz-result" id="result-final">
+        <div class="result-score" id="result-score-final"></div>
+        <div class="result-label">Punkte erreicht</div>
+        <div class="result-msg" id="result-msg-final"></div>
+        <div id="final-recommendations" style="margin:1rem 0;text-align:left"></div>
+        <button class="reset-btn" onclick="resetQuiz('final')">Gesamtquiz wiederholen</button>
+      </div>
+    </div>
+  </div>
+
 
 </main>
 </div>
@@ -3197,6 +3757,104 @@ window.showPage = function(id) {
   if (id === 'm5-terminal') {
     setTimeout(() => initDMLTerminal(), 100);
   }
+};
+
+
+// ─── QUIZ M6, M7, FINAL DATA ───
+QUIZ_DATA.m6 = {
+  correct: ['C','B','C','B','B','C'],
+  feedback: [
+    { correct: 'Richtig. DCL steht für Data Control Language (Datenkontrollsprache). Sie steuert Zugriffsrechte über GRANT und REVOKE.', wrong: 'Falsch. DCL steht für Data Control Language. Creation, Command und Dynamic sind erfunden.' },
+    { correct: 'Richtig. GRANT SELECT ON mitarbeiter TO anna; gibt dem Benutzer anna Leserecht auf die Tabelle mitarbeiter. GRANT ist der DCL-Befehl für Rechtevergabe.', wrong: 'Falsch. ALLOW, SET PERMISSION und INSERT RIGHT sind keine SQL-Befehle. Der korrekte Befehl ist GRANT ... ON ... TO ...' },
+    { correct: 'Richtig. SQLite hat kein Benutzer- und Rechtesystem. Wer die SQLite-Datei öffnen kann hat vollen Zugriff. GRANT und REVOKE existieren in SQLite nicht.', wrong: 'Falsch. MySQL, PostgreSQL und MS SQL Server haben alle ein vollständiges Benutzer- und Rechtesystem mit GRANT und REVOKE. SQLite hat keines.' },
+    { correct: 'Richtig. WITH GRANT OPTION erlaubt dem Benutzer das erhaltene Recht an andere Benutzer weiterzugeben. Das ist eine besondere Berechtigung die mit Bedacht vergeben werden sollte.', wrong: 'Falsch. WITH GRANT OPTION hat nichts mit Ablaufzeiten oder bestimmten Rechtetypen zu tun. Es erlaubt dem Benutzer das Recht weiterzuvergeben.' },
+    { correct: 'Richtig. GRANT SELECT, INSERT ON mitarbeiter TO azubi; gibt genau die benötigten Rechte: lesen und einf&uuml;gen. UPDATE und DELETE sind nicht enthalten.', wrong: "Falsch. ALL PRIVILEGES gibt zu viele Rechte. READ/WRITE sind keine Standard-SQL-Rechte. NO DELETE gibt es nicht als Syntax. Korrekt: GRANT SELECT, INSERT ON ... TO ..." },
+    { correct: 'Richtig. REVOKE ALL PRIVILEGES ON mitarbeiter FROM ben; entzieht alle Rechte. REVOKE ist das Gegenstück zu GRANT.', wrong: 'Falsch. DELETE GRANT, REMOVE ALL und DENY sind keine Standard-SQL-Befehle für Rechteverwaltung. Der korrekte Befehl ist REVOKE ... ON ... FROM ...' }
+  ]
+};
+
+QUIZ_DATA.m7 = {
+  correct: ['B','B','C','B','B','C'],
+  feedback: [
+    { correct: 'Richtig. SQL Injection ist das Einschleusen von SQL-Befehlen über ungefilterte Benutzereingaben. Eine der häufigsten und gefährlichsten Sicherheitslücken in Webanwendungen.', wrong: 'Falsch. SQL Injection ist kein Optimierungsverfahren, kein Backup und kein Import. Es ist ein Angriff bei dem SQL-Befehle über Eingabefelder eingeschleust werden.' },
+    { correct: 'Richtig. Prepared Statements trennen SQL-Struktur von Daten. Benutzereingaben werden als reine Daten behandelt und können keine SQL-Befehle einschleusen.', wrong: 'Falsch. Lange Passwörter schützen den Datenbankzugang, aber nicht gegen SQL Injection im Code. Backups helfen bei Datenverlust, nicht gegen Injection. HTTPS verschlüsselt die Übertragung, nicht die Datenbanklogik.' },
+    { correct: 'Richtig. Das Principle of Least Privilege bedeutet: jeder Benutzer bekommt nur die Rechte die er wirklich braucht. Ein Webshop-Benutzer braucht kein DROP TABLE.', wrong: 'Falsch. Gleiche Rechte für alle, keine Rechte für Admins oder keine Passwörter widersprechen dem Sicherheitsprinzip. Least Privilege = minimale notwendige Rechte.' },
+    { correct: 'Richtig. Datenbankfehlermeldungen enthalten oft Tabellennamen, Spaltennamen und Datenbanktyp. Diese Informationen helfen Angreifern die Struktur zu verstehen und gezielte Angriffe zu planen.', wrong: 'Falsch. Fehlermeldungen verbrauchen kaum Speicher. Sprachliche Gründe sind irrelevant. Rechtliche Gründe sind nicht der Hauptgrund. Das Sicherheitsrisiko durch Informationsleck ist der entscheidende Grund.' },
+    { correct: 'Richtig. Das 3-2-1-Prinzip: 3 Kopien der Daten, auf 2 verschiedenen Medientypen (z.B. Festplatte und Cloud), 1 davon außerhalb des Standorts (extern). So ist man gegen fast alle Ausfallszenarien abgesichert.', wrong: 'Falsch. 3-2-1 steht für 3 Kopien, 2 verschiedene Medien, 1 externe Kopie. Nichts mit Zeitintervallen oder Server-Anzahl.' },
+    { correct: 'Richtig. Prepared Statements trennen den Bauplan (SQL-Struktur) von den Zutaten (Daten). Benutzereingaben können so nie als SQL interpretiert werden, egal was eingegeben wird.', wrong: 'Falsch. Prepared Statements verschlüsseln nichts und blockieren keine Sonderzeichen pauschal. Sie trennen SQL-Logik von Daten. Login-Status ist unabhängig davon.' }
+  ]
+};
+
+QUIZ_DATA.final = {
+  correct: ['B','A','C','B','B','A','B','B','B','C','B','D','B','B','C','C','B','C','B','C'],
+  feedback: [
+    { correct: 'Richtig. Relationale DB: feste Tabellen, SQL, Beziehungen über Schlüssel. Dokumentenbasierte DB: flexible JSON-Dokumente ohne festes Schema, kein SQL-Standard.', wrong: 'Falsch. Relationale Datenbanken sind nicht generell besser oder neuer. Dokumentenbasierte DB sind nicht nur für PDFs. Beide nutzen nicht dasselbe Abfragesystem.' },
+    { correct: 'Richtig. Das D in ACID steht für Durability (Dauerhaftigkeit): abgeschlossene Transaktionen bleiben auch nach einem Systemabsturz oder Stromausfall erhalten.', wrong: 'Falsch. D steht für Durability (Dauerhaftigkeit), nicht für Deletion, Distribution oder Duplication.' },
+    { correct: 'Richtig. DECIMAL(10,2) ist der einzig korrekte Typ für Geldbeträge: exakt, keine Rundungsfehler, 2 Nachkommastellen.', wrong: 'Falsch. FLOAT und DOUBLE haben binäre Rundungsfehler. VARCHAR ist Text. Für Geld immer DECIMAL verwenden.' },
+    { correct: 'Richtig. ALTER TABLE ändert die Struktur einer bestehenden Tabelle: Spalten hinzufügen, umbenennen, Tabelle umbenennen. Keine Daten werden dabei verändert.', wrong: 'Falsch. ALTER TABLE löscht keine Tabelle (das ist DROP). Es ändert keine Daten (das ist UPDATE). Es erstellt keine Kopie.' },
+    { correct: 'Richtig. LIKE K% findet alle Namen die mit K beginnen. ORDER BY gehalt DESC sortiert absteigend.', wrong: 'Falsch. = K* ist keine gültige SQL-Syntax. STARTS WITH und SORT BY existieren nicht in Standard-SQL. LIKE mit % und ORDER BY DESC ist korrekt.' },
+    { correct: 'Richtig. DROP TABLE löscht Daten und Struktur komplett. DELETE FROM löscht nur die Daten, die Tabellenstruktur bleibt erhalten.', wrong: 'Falsch. Es ist genau andersherum. DROP löscht alles, DELETE nur Daten. Keiner ist rückgängig machbar.' },
+    { correct: 'Richtig. GRANT ist der DCL-Befehl um Zugriffsrechte an Datenbankbenutzer zu vergeben.', wrong: 'Falsch. GRANT fügt keine Daten ein, erstellt keine Tabellen und bestätigt keine Transaktionen. Es vergibt Rechte.' },
+    { correct: 'Richtig. SQL Injection = Einschleusen von SQL über Eingaben. Schutz = Prepared Statements.', wrong: 'Falsch. SQL Injection ist kein Backup-Verfahren, kein Optimierungsverfahren und kein Datentyp.' },
+    { correct: 'Richtig. INNER JOIN gibt nur die Schnittmenge zurück: Zeilen die in beiden Tabellen eine Übereinstimmung haben.', wrong: 'Falsch. Alle Zeilen aus beiden Tabellen wäre FULL OUTER JOIN. Alle aus der linken Tabelle wäre LEFT JOIN.' },
+    { correct: 'Richtig. NOT NULL stellt sicher dass ein Feld immer einen Wert haben muss. NULL ist nicht erlaubt.', wrong: 'Falsch. UNIQUE verhindert Duplikate. DEFAULT setzt Standardwerte. CHECK prüft Bedingungen. Für Pflichtfelder ist NOT NULL korrekt.' },
+    { correct: 'Richtig. Persistent bedeutet: Daten bleiben dauerhaft erhalten, auch nach Stromausfall. Datenbanken speichern auf Festplatte, nicht im flüchtigen RAM.', wrong: 'Falsch. Persistent hat nichts mit Verschlüsselung oder automatischem Löschen zu tun. RAM-Speicher ist flüchtig, nicht persistent.' },
+    { correct: 'Richtig. CREATE TABLE gehört zur DDL (Data Definition Language) weil es die Datenbankstruktur definiert.', wrong: 'Falsch. SELECT und INSERT sind DML. GRANT ist DCL. CREATE TABLE ist DDL.' },
+    { correct: 'Richtig. WHERE filtert vor dem Gruppieren, kann keine Aggregat-Funktionen verwenden. HAVING filtert nach GROUP BY und kann AVG(), COUNT() etc. verwenden.', wrong: 'Falsch. WHERE und HAVING haben klare unterschiedliche Rollen. HAVING filtert keine einzelnen Zeilen. Datentypen spielen keine Rolle.' },
+    { correct: 'Richtig. Ein SQL-Dialekt sind die systemspezifischen Erweiterungen und Abweichungen vom ANSI/ISO-Standard. Beispiel: AUTO_INCREMENT (MySQL) vs. AUTOINCREMENT (SQLite) vs. SERIAL (PostgreSQL).', wrong: 'Falsch. Ein Dialekt ist keine veraltete Version. Er hat nichts mit Sprache oder Semikolons zu tun.' },
+    { correct: 'Richtig. Die 3NF (Dritte Normalform) fordert: kein Nicht-Schlüsselfeld darf transitiv von einem anderen Nicht-Schlüsselfeld abhängen. Z.B. PLZ bestimmt Ort → Ort in eigene Tabelle auslagern.', wrong: 'Falsch. Atomare Werte in jeder Zelle ist 1NF. Primärschlüssel ist gute Praxis aber keine Normalform. NOT NULL hat nichts mit Normalisierung zu tun.' },
+    { correct: 'Richtig. IS NULL ist der einzig korrekte Weg um auf NULL zu prüfen. NULL ist kein normaler Wert, Vergleiche mit = liefern immer NULL (unbekannt) zurück.', wrong: 'Falsch. Weder = NULL noch == NULL funktionieren in SQL. Ein leerer String ist nicht NULL. Nur IS NULL ist korrekt.' },
+    { correct: 'Richtig. Ein Index ist eine interne Datenstruktur die Abfragen auf bestimmte Spalten beschleunigt. Ohne Index: Full Table Scan. Mit Index: direkter Zugriff.', wrong: 'Falsch. Ein Index ist keine Benutzerliste, kein Backup und nicht dasselbe wie ein Primärschlüssel (obwohl PKs automatisch indiziert werden).' },
+    { correct: 'Richtig. RIGHT JOIN ist in SQLite nicht verfügbar. Als Workaround tauscht man die Tabellen und verwendet LEFT JOIN.', wrong: 'Falsch. INNER JOIN, LEFT JOIN und CROSS JOIN sind in SQLite verfügbar. Nur RIGHT JOIN fehlt.' },
+    { correct: 'Richtig. BLOB steht für Binary Large Object. Es wird für rohe Binärdaten verwendet: Bilder, Dateien, Audio, Videos.', wrong: 'Falsch. BLOB ist kein Zahlentyp, kein Backup-Format und kein SQL-Befehl. Es ist ein Datentyp für binäre Daten.' },
+    { correct: 'Richtig. Ein Fremdschlüssel (FK) ist eine Spalte die auf den Primärschlüssel einer anderen Tabelle verweist. So entsteht die Verknüpfung (Relation) zwischen Tabellen.', wrong: 'Falsch. FK ist kein alternativer PK, kein verschlüsselter Schlüssel und kein Passwort. Er ist der Verweis auf einen anderen Tabellen-PK.' }
+  ]
+};
+
+// Erweiterte showQuizResult für Gesamtquiz mit Empfehlungen
+const _origShowResult = showQuizResult;
+window.showQuizResult = function(quizId, total) {
+  const state = quizState[quizId];
+  const score = Object.values(state.answers).filter(Boolean).length;
+  const pct = Math.round((score / total) * 100);
+  const resultEl = document.getElementById('result-' + quizId);
+  document.getElementById('result-score-' + quizId).textContent = score + ' / ' + total;
+
+  let msg = '';
+  if (pct >= 90) msg = 'Ausgezeichnet! Du beherrschst den SQL-Stoff sehr gut.';
+  else if (pct >= 75) msg = 'Gut gemacht. Ein paar Lücken – schau dir die falschen Antworten nochmal an.';
+  else if (pct >= 50) msg = 'Mittelmäßig. Geh die schwachen Module nochmal durch.';
+  else msg = 'Noch viel Nachholbedarf. Starte am besten bei Modul 1 neu.';
+
+  document.getElementById('result-msg-' + quizId).textContent = msg;
+
+  if (quizId === 'final') {
+    const rec = document.getElementById('final-recommendations');
+    const moduleMap = {
+      0: 'm1', 1: 'm1', 10: 'm1',
+      2: 'm3', 9: 'm1',
+      3: 'm4', 11: 'm2', 14: 'm4',
+      4: 'm5', 5: 'm5', 8: 'm5', 12: 'm5', 15: 'm1', 17: 'm5', 18: 'm3',
+      6: 'm6',
+      7: 'm7',
+      13: 'm2', 16: 'm4', 19: 'm1'
+    };
+    const weakModules = new Set();
+    Object.entries(state.answers).forEach(([q, correct]) => {
+      if (!correct && moduleMap[parseInt(q)]) weakModules.add(moduleMap[parseInt(q)]);
+    });
+    if (weakModules.size > 0) {
+      const moduleNames = { m1: 'Modul 1 (Datenbanken)', m2: 'Modul 2 (SQL Grundlagen)', m3: 'Modul 3 (Datentypen)', m4: 'Modul 4 (DDL)', m5: 'Modul 5 (DML)', m6: 'Modul 6 (DCL)', m7: 'Modul 7 (Sicherheit)' };
+      rec.innerHTML = '<div class="info-box yellow"><div class="box-label">Empfehlung</div><p>Schau nochmal in: ' +
+        Array.from(weakModules).map(m => '<strong>' + moduleNames[m] + '</strong>').join(', ') +
+        '. Oder übe weiter auf <a href="https://sql-island.informatik.uni-kl.de/" target="_blank" style="color:var(--accent)">SQL Island</a>.</p></div>';
+    }
+  }
+
+  resultEl.classList.add('show');
+  const scoreEl = document.getElementById('score-' + quizId);
+  if (scoreEl) scoreEl.textContent = score + '/' + total;
+  updateProgress();
 };
 
 </script>
