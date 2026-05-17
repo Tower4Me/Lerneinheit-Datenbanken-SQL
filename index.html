@@ -1033,6 +1033,9 @@ p strong { color: var(--text); font-weight: 600; }
     </div>
 
   </nav>
+  <div style="padding:1rem 1.2rem;border-top:1px solid var(--border)">
+    <button onclick="resetAllProgress()" style="width:100%;font-family:'DM Mono',monospace;font-size:0.68rem;padding:0.5rem;border-radius:5px;border:1px solid var(--border2);background:transparent;color:var(--text-faint);cursor:pointer;transition:all 0.15s;letter-spacing:0.05em" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text-faint)'">Fortschritt zurücksetzen</button>
+  </div>
 </aside>
 
 <!-- ─── MAIN ─── -->
@@ -3485,11 +3488,66 @@ function resetQuiz(quizId) {
 }
 
 function updateProgress() {
-  const total = 7; // total quizzes
+  const total = 7;
   const done = Object.keys(quizState).length;
   const pct = Math.round((done / total) * 100);
   document.getElementById('progress-fill').style.width = pct + '%';
   document.getElementById('progress-pct').textContent = pct + '%';
+  saveProgress();
+}
+
+function saveProgress() {
+  try {
+    const data = { quizState: {}, currentPage: currentPage };
+    Object.entries(quizState).forEach(([id, state]) => {
+      data.quizState[id] = { answers: state.answers };
+    });
+    localStorage.setItem('sql_learn_progress', JSON.stringify(data));
+  } catch(e) {}
+}
+
+function loadProgress() {
+  try {
+    const raw = localStorage.getItem('sql_learn_progress');
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    if (!data.quizState) return;
+    Object.entries(data.quizState).forEach(([id, state]) => {
+      if (!QUIZ_DATA[id]) return;
+      quizState[id] = { answers: state.answers };
+      const total = document.querySelectorAll('#quiz-' + id + ' .quiz-question').length;
+      Object.entries(state.answers).forEach(([qIdx, correct]) => {
+        const q = document.querySelectorAll('#quiz-' + id + ' .quiz-question')[parseInt(qIdx)];
+        if (!q) return;
+        const opts = q.querySelectorAll('.quiz-option');
+        const qdata = QUIZ_DATA[id];
+        const correctLetter = qdata.correct[parseInt(qIdx)];
+        opts.forEach(o => {
+          o.disabled = true;
+          const letter = o.querySelector('.option-letter').textContent.trim();
+          if (letter === correctLetter) o.classList.add('correct');
+        });
+        const fb = document.getElementById('fb-' + id + '-' + qIdx);
+        if (fb) {
+          fb.className = 'quiz-feedback ' + (correct ? 'correct-fb' : 'wrong-fb') + ' show';
+          fb.innerHTML = '<div class="feedback-title">' + (correct ? 'Richtig \u2713' : 'Falsch \u2717') + '</div>' +
+            (correct ? qdata.feedback[parseInt(qIdx)].correct : qdata.feedback[parseInt(qIdx)].wrong);
+        }
+      });
+      showQuizResult(id, total);
+    });
+    updateProgress();
+    if (data.currentPage) showPage(data.currentPage);
+  } catch(e) {}
+}
+
+function resetAllProgress() {
+  if (!confirm('Gesamten Fortschritt zur\u00fccksetzen? Alle Quiz-Ergebnisse werden gel\u00f6scht.')) return;
+  try { localStorage.removeItem('sql_learn_progress'); } catch(e) {}
+  Object.keys(quizState).forEach(id => resetQuiz(id));
+  showPage('m1-intro');
+  document.getElementById('progress-fill').style.width = '0%';
+  document.getElementById('progress-pct').textContent = '0%';
 }
 
 // ─── QUIZ M4 DATA ───
@@ -3706,6 +3764,7 @@ function resetTerminal(termId) {
 
 // SQLite beim Laden initialisieren
 initSQLite();
+setTimeout(loadProgress, 200);
 
 
 // ─── QUIZ M5 DATA ───
