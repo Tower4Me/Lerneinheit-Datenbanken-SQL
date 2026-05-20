@@ -1069,6 +1069,27 @@ body.light .code-block {
 
     <div class="nav-module">
       <div class="nav-module-header">
+        <span class="module-num">08</span> ER-Diagramme
+      </div>
+      <div class="nav-items">
+        <div class="nav-item" onclick="showPage('m8-grundlagen')">
+          <span class="item-dot"></span> Grundlagen &amp; Notationen
+        </div>
+        <div class="nav-item" onclick="showPage('m8-regeln')">
+          <span class="item-dot"></span> Kardinalit&auml;ten &amp; Regeln
+        </div>
+        <div class="nav-item" onclick="showPage('m8-erweitert')">
+          <span class="item-dot"></span> Erweitertes ERM
+        </div>
+        <div class="nav-item" onclick="showPage('m8-quiz')">
+          <span class="item-dot"></span> Quiz 8
+          <span class="item-score" id="score-m8"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-module">
+      <div class="nav-module-header">
         <span class="module-num">&#9733;</span> Abschluss
       </div>
       <div class="nav-items">
@@ -1094,6 +1115,7 @@ body.light .code-block {
       <span class="current" id="breadcrumb">Modul 1 · Was ist eine Datenbank?</span>
     </div>
     <div class="topbar-nav">
+      <button id="theme-btn" class="theme-toggle" onclick="toggleTheme()">&#9790; Dunkel</button>
       <button class="btn-nav" onclick="prevPage()">&#8592; Zurück</button>
       <button class="btn-nav primary" onclick="nextPage()">Weiter &#8594;</button>
     </div>
@@ -1314,14 +1336,115 @@ body.light .code-block {
     </table>
 
     <div class="info-box yellow">
-      <div class="box-label">Für die IHK</div>
-      <p>In der Prüfung dreht sich fast alles um relationale Datenbanken und SQL. NoSQL und Key-Value werden höchstens im Überblick abgefragt. Der Fokus dieser Lernplattform liegt deshalb auf relationalem SQL.</p>
+      <div class="box-label">F&uuml;r die IHK</div>
+      <p>In der Pr&uuml;fung dreht sich fast alles um relationale Datenbanken und SQL. NoSQL und Key-Value werden h&ouml;chstens im &Uuml;berblick abgefragt. Der Fokus dieser Lernplattform liegt deshalb auf relationalem SQL.</p>
+    </div>
+
+    <h2>Starke &amp; schwache Entit&auml;ten</h2>
+    <p>In einer relationalen Datenbank unterscheidet man zwei Arten von Entit&auml;ten (Tabellen):</p>
+    <div class="card-grid">
+      <div class="card-item blue">
+        <div class="card-label">Starke Entit&auml;t</div>
+        <h4>Existiert eigenst&auml;ndig</h4>
+        <p>Hat einen eigenen Prim&auml;rschl&uuml;ssel und kann ohne andere Tabellen existieren. Beispiele: <code style="font-family:'DM Mono',monospace">Kunde</code>, <code style="font-family:'DM Mono',monospace">Fahrzeug</code>, <code style="font-family:'DM Mono',monospace">Artikel</code>.</p>
+      </div>
+      <div class="card-item red">
+        <div class="card-label">Schwache Entit&auml;t</div>
+        <h4>Abh&auml;ngig von einer anderen</h4>
+        <p>Kann ohne ihre &uuml;bergeordnete Entit&auml;t nicht existieren. Ihr PK enth&auml;lt zwingend den FK der Vater-Entit&auml;t. Beispiel: <code style="font-family:'DM Mono',monospace">Kassenbon_Position</code> existiert nicht ohne <code style="font-family:'DM Mono',monospace">Kassenbon</code>.</p>
+      </div>
+    </div>
+
+    <div class="code-block"><span class="code-lang">SQL Beispiel</span><span class="cm">-- Starke Entit&auml;t: Kassenbon existiert eigenst&auml;ndig</span>
+<span class="kw">CREATE TABLE</span> <span class="tbl">kassenbon</span> (
+  bon_nummer   <span class="fn">INTEGER</span> <span class="kw">PRIMARY KEY</span>,
+  datum        <span class="fn">DATE</span>    <span class="kw">NOT NULL</span>,
+  total_betrag <span class="fn">DECIMAL</span>(<span class="num">10</span>,<span class="num">2</span>)
+);
+
+<span class="cm">-- Schwache Entit&auml;t: Position existiert nur mit Kassenbon</span>
+<span class="kw">CREATE TABLE</span> <span class="tbl">kassenbon_position</span> (
+  positions_nr <span class="fn">INTEGER</span>,
+  bon_nummer   <span class="fn">INTEGER</span>,   <span class="cm">-- FK auf Vater-Entit&auml;t</span>
+  menge        <span class="fn">INTEGER</span>   <span class="kw">NOT NULL</span>,
+  <span class="kw">PRIMARY KEY</span> (positions_nr, bon_nummer),  <span class="cm">-- Zusammengesetzter PK!</span>
+  <span class="kw">FOREIGN KEY</span> (bon_nummer) <span class="kw">REFERENCES</span> <span class="tbl">kassenbon</span>(bon_nummer)
+);</div>
+
+    <div class="info-box yellow">
+      <div class="box-label">Zusammengesetzter Prim&auml;rschl&uuml;ssel</div>
+      <p>Schwache Entit&auml;ten haben meist einen <strong>zusammengesetzten PK</strong>: eine Kombination aus eigener Nummer und dem FK der Vater-Entit&auml;t. Die <code style="font-family:'DM Mono',monospace">kassenbon_position</code> mit positions_nr=1 existiert f&uuml;r jeden Kassenbon &ndash; eindeutig wird sie erst durch die Kombination beider.</p>
+    </div>
+
+    <h2>Stern-Schema &amp; Schneeflocken-Schema</h2>
+    <p>Diese zwei Architekturm&ouml;glichkeiten entscheiden wie Tabellen miteinander verkn&uuml;pft werden:</p>
+
+    <div class="compare-row">
+      <div class="compare-col good">
+        <div class="col-header">Stern-Schema</div>
+        <ul>
+          <li>Eine zentrale Fakten-Tabelle</li>
+          <li>Direkt verkn&uuml;pft mit einfachen Dimensions-Tabellen</li>
+          <li>Hohe Performance bei Abfragen</li>
+          <li>Etwas mehr Datenredundanz</li>
+          <li>Einfach zu verstehen und zu warten</li>
+        </ul>
+      </div>
+      <div class="compare-col bad">
+        <div class="col-header">Schneeflocken-Schema</div>
+        <ul>
+          <li>Dimensions-Tabellen weiter normalisiert</li>
+          <li>Verzweigt wie eine Schneeflocke</li>
+          <li>Geringe Datenredundanz</li>
+          <li>Mehr Joins n&ouml;tig &rarr; langsamer</li>
+          <li>Komplexer zu warten</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="db-visual">
+      <div style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--accent);margin-bottom:0.75rem;letter-spacing:0.08em">STERN-SCHEMA &ndash; Beispiel Supermarkt</div>
+      <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center">
+        <div class="db-table-vis" style="border-color:var(--yellow)">
+          <div class="db-table-header" style="color:var(--yellow)">&#9733; verkauf (Fakt)</div>
+          <div class="db-table-row"><span class="db-col-name">verkauf_id</span><span class="db-col-pk">PK</span></div>
+          <div class="db-table-row"><span class="db-col-name">artikel_id</span><span class="db-col-fk">FK</span></div>
+          <div class="db-table-row"><span class="db-col-name">kunden_id</span><span class="db-col-fk">FK</span></div>
+          <div class="db-table-row"><span class="db-col-name">datum_id</span><span class="db-col-fk">FK</span></div>
+          <div class="db-table-row"><span class="db-col-name">menge</span><span class="db-col-type">INT</span></div>
+        </div>
+        <div style="color:var(--accent);font-size:1.2rem">&#8596;</div>
+        <div style="display:flex;flex-direction:column;gap:0.5rem">
+          <div class="db-table-vis">
+            <div class="db-table-header">artikel</div>
+            <div class="db-table-row"><span class="db-col-name">artikel_id</span><span class="db-col-pk">PK</span></div>
+            <div class="db-table-row"><span class="db-col-name">name</span><span class="db-col-type">VARCHAR</span></div>
+            <div class="db-table-row"><span class="db-col-name">preis</span><span class="db-col-type">DECIMAL</span></div>
+          </div>
+          <div class="db-table-vis">
+            <div class="db-table-header">kunde</div>
+            <div class="db-table-row"><span class="db-col-name">kunden_id</span><span class="db-col-pk">PK</span></div>
+            <div class="db-table-row"><span class="db-col-name">name</span><span class="db-col-type">VARCHAR</span></div>
+          </div>
+          <div class="db-table-vis">
+            <div class="db-table-header">datum</div>
+            <div class="db-table-row"><span class="db-col-name">datum_id</span><span class="db-col-pk">PK</span></div>
+            <div class="db-table-row"><span class="db-col-name">tag</span><span class="db-col-type">DATE</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box blue">
+      <div class="box-label">Wann welches Schema?</div>
+      <p><strong>Stern-Schema:</strong> Wenn Performance wichtig ist, z.B. bei vielen gleichzeitigen Abfragen in einem Shop-System.<br>
+      <strong>Schneeflocken-Schema:</strong> Wenn Speicherplatz und Konsistenz wichtiger sind als Abfragegeschwindigkeit, z.B. in Archiv-Datenbanken.</p>
     </div>
 
     <div class="divider"></div>
     <div style="display:flex;gap:1rem">
-      <button class="btn-nav" onclick="showPage('m1-intro')">&#8592; Zurück</button>
-      <button class="btn-nav primary" onclick="showPage('m1-aufbau')">Weiter: Aufbau & Begriffe &#8594;</button>
+      <button class="btn-nav" onclick="showPage('m1-intro')">&#8592; Zur&uuml;ck</button>
+      <button class="btn-nav primary" onclick="showPage('m1-aufbau')">Weiter: Aufbau &amp; Begriffe &#8594;</button>
     </div>
   </div>
 
@@ -2474,6 +2597,42 @@ abteilung:   (1, 'IT'), (2, 'Vertrieb')
 
     <div class="info-box blue"><div class="box-label">F&uuml;r die IHK</div><p>INNER JOIN und LEFT JOIN sind Pflicht. Den Unterschied erkl&auml;ren k&ouml;nnen: INNER JOIN = Schnittmenge, LEFT JOIN = alle aus links. Die ON-Bedingung beschreibt die Verkn&uuml;pfung &uuml;ber Fremdschl&uuml;ssel.</p></div>
 
+    <h2>Visualisierung: JOIN-Typen</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:1.5rem;margin:1.25rem 0">
+      <div style="flex:1;min-width:180px">
+        <div style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--accent);margin-bottom:0.5rem;letter-spacing:0.08em">INNER JOIN</div>
+        <svg viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:180px">
+          <circle cx="60" cy="50" r="38" fill="rgba(0,200,255,0.08)" stroke="#00c8ff" stroke-width="1.5"/>
+          <circle cx="100" cy="50" r="38" fill="rgba(0,200,255,0.08)" stroke="#00c8ff" stroke-width="1.5"/>
+          <path d="M80,14 A38,38 0 0,1 80,86 A38,38 0 0,1 80,14" fill="rgba(0,200,255,0.35)"/>
+          <text x="38" y="53" font-size="10" fill="#8090a8" font-family="monospace">A</text>
+          <text x="112" y="53" font-size="10" fill="#8090a8" font-family="monospace">B</text>
+          <text x="72" y="53" font-size="9" fill="#00c8ff" font-family="monospace">&#x2229;</text>
+        </svg>
+        <p style="font-size:0.75rem;color:var(--text-faint);margin-top:0.3rem">Nur &Uuml;bereinstimmungen</p>
+      </div>
+      <div style="flex:1;min-width:180px">
+        <div style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--green);margin-bottom:0.5rem;letter-spacing:0.08em">LEFT JOIN</div>
+        <svg viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:180px">
+          <circle cx="60" cy="50" r="38" fill="rgba(0,229,160,0.35)" stroke="#00e5a0" stroke-width="1.5"/>
+          <circle cx="100" cy="50" r="38" fill="rgba(0,229,160,0.08)" stroke="#00e5a0" stroke-width="1.5"/>
+          <text x="33" y="53" font-size="10" fill="#00e5a0" font-family="monospace">A</text>
+          <text x="112" y="53" font-size="10" fill="#8090a8" font-family="monospace">B</text>
+        </svg>
+        <p style="font-size:0.75rem;color:var(--text-faint);margin-top:0.3rem">Alle aus A, Rest wenn vorhanden</p>
+      </div>
+      <div style="flex:1;min-width:180px">
+        <div style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--purple);margin-bottom:0.5rem;letter-spacing:0.08em">RIGHT JOIN</div>
+        <svg viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:180px">
+          <circle cx="60" cy="50" r="38" fill="rgba(124,111,255,0.08)" stroke="#7c6fff" stroke-width="1.5"/>
+          <circle cx="100" cy="50" r="38" fill="rgba(124,111,255,0.35)" stroke="#7c6fff" stroke-width="1.5"/>
+          <text x="33" y="53" font-size="10" fill="#8090a8" font-family="monospace">A</text>
+          <text x="112" y="53" font-size="10" fill="#7c6fff" font-family="monospace">B</text>
+        </svg>
+        <p style="font-size:0.75rem;color:var(--text-faint);margin-top:0.3rem">Alle aus B (nicht in SQLite)</p>
+      </div>
+    </div>
+
     <div class="divider"></div>
     <div style="display:flex;gap:1rem">
       <button class="btn-nav" onclick="showPage('m5-dml')">&#8592; Zur&uuml;ck</button>
@@ -3025,6 +3184,353 @@ $stmt->execute([$_POST[<span class="str">'name'</span>]]);
     </div>
   </div>
 
+
+  <!-- ══ MODUL 8: ER-DIAGRAMME ══ -->
+  <div class="page" id="page-m8-grundlagen">
+    <span class="chapter-tag tag-ddl">Modul 08 &middot; ER-Diagramme</span>
+    <h1>Entity-Relationship-Diagramme</h1>
+    <p class="lead">Ein ER-Diagramm (Entity-Relationship-Diagramm) ist ein grafisches Werkzeug um die Struktur einer Datenbank zu planen, bevor man eine einzige Zeile SQL schreibt.</p>
+
+    <h2>Was ist ein ERM?</h2>
+    <p>Das <strong>Entity-Relationship-Modell (ERM)</strong> wurde 1976 von Peter Chen entwickelt. Es beschreibt drei Kernkonzepte:</p>
+    <div class="card-grid">
+      <div class="card-item blue"><div class="card-label">Entity (Entit&auml;t)</div><h4>Objekt der realen Welt</h4><p>Etwas das gespeichert werden soll. Wird sp&auml;ter zur Tabelle. Beispiele: Kunde, Artikel, Fahrzeug.</p></div>
+      <div class="card-item green"><div class="card-label">Attribute</div><h4>Eigenschaften</h4><p>Die Spalten der sp&auml;teren Tabelle. Der Prim&auml;rschl&uuml;ssel ist unterstrichen dargestellt.</p></div>
+      <div class="card-item yellow"><div class="card-label">Relationship (Beziehung)</div><h4>Verbindung</h4><p>Wie Entit&auml;ten zusammenh&auml;ngen. Mit Kardinalit&auml;t (1, N, M).</p></div>
+    </div>
+
+    <h2>Notationen im Vergleich</h2>
+    <div class="compare-row">
+      <div class="compare-col good">
+        <div class="col-header">Chen-Notation</div>
+        <ul><li>Entit&auml;ten als Rechtecke</li><li>Beziehungen als Rauten</li><li>Attribute als Ovale</li><li>Kardinalit&auml;ten als 1/N/M an Linien</li><li>Ausf&uuml;hrlich, gut zum Lernen</li></ul>
+      </div>
+      <div class="compare-col good">
+        <div class="col-header">Crow's Foot / Martin-Notation</div>
+        <ul><li>Entit&auml;ten als Rechtecke mit Spalten</li><li>Kardinalit&auml;ten als Symbole an Linienenden</li><li>Keine separate Beziehungsraute</li><li>Kompakter, Standard in der Praxis</li></ul>
+      </div>
+    </div>
+
+    <h2>Chen-Notation: Symbole</h2>
+    <div class="db-visual">
+      <svg viewBox="0 0 620 180" xmlns="http://www.w3.org/2000/svg" style="width:100%;font-family:'DM Mono',monospace">
+        <rect x="20" y="65" width="120" height="50" rx="4" fill="rgba(0,200,255,0.08)" stroke="#00c8ff" stroke-width="1.5"/>
+        <text x="80" y="94" text-anchor="middle" fill="#e2e8f4" font-size="13" font-weight="600">Kunde</text>
+        <text x="80" y="148" text-anchor="middle" fill="#8090a8" font-size="10">Entit&auml;t = Rechteck</text>
+        <ellipse cx="80" cy="28" rx="45" ry="18" fill="rgba(0,229,160,0.08)" stroke="#00e5a0" stroke-width="1.5"/>
+        <text x="80" y="32" text-anchor="middle" fill="#00e5a0" font-size="10">kunden_id</text>
+        <line x1="80" y1="46" x2="80" y2="65" stroke="#3d4f6a" stroke-width="1"/>
+        <text x="80" y="15" text-anchor="middle" fill="#8090a8" font-size="9">Attribut = Oval (PK unterstrichen)</text>
+        <line x1="140" y1="90" x2="200" y2="90" stroke="#3d4f6a" stroke-width="1.5"/>
+        <text x="158" y="83" fill="#f5a623" font-size="12" font-weight="700">1</text>
+        <polygon points="260,65 320,90 260,115 200,90" fill="rgba(124,111,255,0.1)" stroke="#7c6fff" stroke-width="1.5"/>
+        <text x="260" y="94" text-anchor="middle" fill="#e2e8f4" font-size="11">bestellt</text>
+        <text x="260" y="148" text-anchor="middle" fill="#8090a8" font-size="10">Beziehung = Raute</text>
+        <line x1="320" y1="90" x2="380" y2="90" stroke="#3d4f6a" stroke-width="1.5"/>
+        <text x="338" y="83" fill="#f5a623" font-size="12" font-weight="700">N</text>
+        <rect x="380" y="65" width="120" height="50" rx="4" fill="rgba(0,200,255,0.08)" stroke="#00c8ff" stroke-width="1.5"/>
+        <text x="440" y="94" text-anchor="middle" fill="#e2e8f4" font-size="13" font-weight="600">Artikel</text>
+        <text x="260" y="165" text-anchor="middle" fill="#f5a623" font-size="10">Kardinalit&auml;t an der Linie</text>
+      </svg>
+    </div>
+
+    <h2>Crow's Foot: Symbole an Linienenden</h2>
+    <div class="db-visual">
+      <svg viewBox="0 0 620 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;font-family:'DM Mono',monospace">
+        <line x1="40" y1="35" x2="100" y2="35" stroke="#00c8ff" stroke-width="1.5"/>
+        <line x1="95" y1="25" x2="95" y2="45" stroke="#00c8ff" stroke-width="2"/>
+        <text x="70" y="60" text-anchor="middle" fill="#8090a8" font-size="10">genau 1</text>
+
+        <line x1="160" y1="35" x2="230" y2="35" stroke="#00e5a0" stroke-width="1.5"/>
+        <line x1="225" y1="35" x2="210" y2="22" stroke="#00e5a0" stroke-width="1.5"/>
+        <line x1="225" y1="35" x2="210" y2="48" stroke="#00e5a0" stroke-width="1.5"/>
+        <line x1="225" y1="35" x2="213" y2="35" stroke="#00e5a0" stroke-width="1.5"/>
+        <text x="195" y="60" text-anchor="middle" fill="#8090a8" font-size="10">viele (N)</text>
+        <text x="195" y="73" text-anchor="middle" fill="#8090a8" font-size="9">Kr&auml;henfu&szlig;</text>
+
+        <line x1="290" y1="35" x2="370" y2="35" stroke="#f5a623" stroke-width="1.5"/>
+        <circle cx="358" cy="35" r="6" fill="none" stroke="#f5a623" stroke-width="1.5"/>
+        <line x1="366" y1="25" x2="366" y2="45" stroke="#f5a623" stroke-width="2"/>
+        <text x="330" y="60" text-anchor="middle" fill="#8090a8" font-size="10">0 oder 1</text>
+        <text x="330" y="73" text-anchor="middle" fill="#8090a8" font-size="9">(optional)</text>
+
+        <line x1="420" y1="35" x2="510" y2="35" stroke="#7c6fff" stroke-width="1.5"/>
+        <circle cx="496" cy="35" r="6" fill="none" stroke="#7c6fff" stroke-width="1.5"/>
+        <line x1="506" y1="35" x2="492" y2="22" stroke="#7c6fff" stroke-width="1.5"/>
+        <line x1="506" y1="35" x2="492" y2="48" stroke="#7c6fff" stroke-width="1.5"/>
+        <line x1="506" y1="35" x2="495" y2="35" stroke="#7c6fff" stroke-width="1.5"/>
+        <text x="465" y="60" text-anchor="middle" fill="#8090a8" font-size="10">0 oder viele</text>
+
+        <rect x="30" y="85" width="110" height="40" rx="3" fill="rgba(0,200,255,0.06)" stroke="#00c8ff" stroke-width="1.5"/>
+        <text x="85" y="110" text-anchor="middle" fill="#00c8ff" font-size="11">Kunde</text>
+        <line x1="140" y1="105" x2="210" y2="105" stroke="#3d4f6a" stroke-width="1.5"/>
+        <line x1="145" y1="96" x2="145" y2="114" stroke="#00c8ff" stroke-width="2"/>
+        <line x1="206" y1="105" x2="193" y2="95" stroke="#00e5a0" stroke-width="1.5"/>
+        <line x1="206" y1="105" x2="193" y2="115" stroke="#00e5a0" stroke-width="1.5"/>
+        <line x1="206" y1="105" x2="196" y2="105" stroke="#00e5a0" stroke-width="1.5"/>
+        <rect x="210" y="85" width="130" height="40" rx="3" fill="rgba(0,200,255,0.06)" stroke="#00c8ff" stroke-width="1.5"/>
+        <text x="275" y="110" text-anchor="middle" fill="#00c8ff" font-size="11">Bestellung</text>
+        <text x="175" y="130" text-anchor="middle" fill="#f5a623" font-size="10">1 Kunde : N Bestellungen</text>
+      </svg>
+    </div>
+
+    <div class="divider"></div>
+    <div style="display:flex;gap:1rem">
+      <button class="btn-nav" onclick="showPage('m7-quiz')">&#8592; Zur&uuml;ck</button>
+      <button class="btn-nav primary" onclick="showPage('m8-regeln')">Weiter: Kardinalit&auml;ten &amp; Regeln &#8594;</button>
+    </div>
+  </div>
+
+  <!-- ══ MODUL 8: KARDINALITÄTEN ══ -->
+  <div class="page" id="page-m8-regeln">
+    <span class="chapter-tag tag-ddl">Modul 08 &middot; ER-Diagramme</span>
+    <h1>Kardinalit&auml;ten &amp; Regeln</h1>
+    <p class="lead">Kardinalit&auml;ten beschreiben wie viele Instanzen einer Entit&auml;t mit wie vielen einer anderen in Beziehung stehen. Sie bestimmen direkt die SQL-Tabellenstruktur.</p>
+
+    <h2>Die drei Grundtypen</h2>
+    <div class="card-grid">
+      <div class="card-item blue"><div class="card-label">1 : 1</div><h4>Eins zu Eins</h4><p>Jeder Datensatz ist mit genau einem anderen verkn&uuml;pft. Beispiel: Mitarbeiter hat genau einen Personalausweis.</p></div>
+      <div class="card-item green"><div class="card-label">1 : N</div><h4>Eins zu Viele</h4><p>Ein Datensatz geh&ouml;rt zu mehreren. Beispiel: 1 Kunde hat N Bestellungen, jede Bestellung geh&ouml;rt zu genau 1 Kunden.</p></div>
+      <div class="card-item purple"><div class="card-label">M : N</div><h4>Viele zu Viele</h4><p>Viele auf beiden Seiten. Beispiel: Student besucht viele Kurse, Kurs hat viele Studenten. Braucht Zwischentabelle.</p></div>
+    </div>
+
+    <h2>Umsetzungsregeln: ERM &rarr; SQL</h2>
+    <table class="data-table">
+      <thead><tr><th>Beziehung</th><th>SQL-Umsetzung</th><th>Best Practice</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>1 : 1</strong></td>
+          <td>FK in einer der beiden Tabellen</td>
+          <td>FK in die Tabelle mit <em>weniger Datens&auml;tzen</em> oder der "abh&auml;ngigeren" Entit&auml;t. Ausweis bekommt mitarbeiter_id &ndash; nicht andersherum, weil nicht jeder Mitarbeiter zwingend einen Ausweis hat.</td>
+        </tr>
+        <tr>
+          <td><strong>1 : N</strong></td>
+          <td>FK auf der N-Seite</td>
+          <td>Immer auf die "Viele"-Seite. Bestellung bekommt kunden_id als FK. Nie in der 1-Tabelle eine Liste von IDs speichern.</td>
+        </tr>
+        <tr>
+          <td><strong>M : N</strong></td>
+          <td>Zwischentabelle</td>
+          <td>Neue Tabelle mit zusammengesetztem PK aus beiden FKs. Beziehungsattribute (z.B. Note) kommen in die Zwischentabelle, nicht in eine der Haupttabellen.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Best Practices</h2>
+    <div class="card-grid">
+      <div class="card-item blue">
+        <div class="card-label">1:1 &ndash; FK-Seite w&auml;hlen</div>
+        <h4>Weniger = FK-Seite</h4>
+        <p>Den FK in die Tabelle legen die <strong>weniger Eintr&auml;ge</strong> hat oder die abh&auml;ngigere ist. Nicht jeder Mitarbeiter hat einen Dienstwagen &rarr; FK in <code style="font-family:'DM Mono',monospace">dienstwagen</code>, nicht in <code style="font-family:'DM Mono',monospace">mitarbeiter</code>.</p>
+      </div>
+      <div class="card-item green">
+        <div class="card-label">Nie Listen in Zellen</div>
+        <h4>1NF einhalten</h4>
+        <p>Niemals mehrere Werte in einer Zelle speichern: <code style="font-family:'DM Mono',monospace">artikel_ids = "1,2,3"</code> ist falsch. Das ist eine versteckte 1:N-Beziehung &rarr; eigene Tabelle anlegen.</p>
+      </div>
+      <div class="card-item yellow">
+        <div class="card-label">Beziehungsattribute</div>
+        <h4>In die Zwischentabelle</h4>
+        <p>Attribute die zur Beziehung geh&ouml;ren (nicht zur Entit&auml;t selbst) kommen in die Zwischentabelle. Note geh&ouml;rt zu "Student besucht Kurs", nicht zu Student oder Kurs allein.</p>
+      </div>
+      <div class="card-item red">
+        <div class="card-label">Redundanz vermeiden</div>
+        <h4>Normalisieren</h4>
+        <p>Denselben Wert nie mehrfach speichern. Statt Abteilungsname bei jedem Mitarbeiter &rarr; Abteilungs-ID als FK. &Auml;nderung an einer Stelle reicht dann.</p>
+      </div>
+    </div>
+
+    <h2>M:N Beispiel: Student &amp; Kurs</h2>
+    <div class="code-block"><span class="code-lang">SQL</span><span class="kw">CREATE TABLE</span> <span class="tbl">student</span> (
+  matrikel_nr <span class="fn">INTEGER</span> <span class="kw">PRIMARY KEY</span>,
+  name        <span class="fn">VARCHAR</span>(<span class="num">100</span>)
+);
+<span class="kw">CREATE TABLE</span> <span class="tbl">kurs</span> (
+  kurs_id <span class="fn">INTEGER</span> <span class="kw">PRIMARY KEY</span>,
+  titel   <span class="fn">VARCHAR</span>(<span class="num">100</span>)
+);
+<span class="cm">-- Zwischentabelle l&ouml;st M:N auf</span>
+<span class="kw">CREATE TABLE</span> <span class="tbl">einschreibung</span> (
+  matrikel_nr <span class="fn">INTEGER</span>,
+  kurs_id     <span class="fn">INTEGER</span>,
+  note        <span class="fn">DECIMAL</span>(<span class="num">2</span>,<span class="num">1</span>),    <span class="cm">-- Beziehungsattribut!</span>
+  <span class="kw">PRIMARY KEY</span> (matrikel_nr, kurs_id),
+  <span class="kw">FOREIGN KEY</span> (matrikel_nr) <span class="kw">REFERENCES</span> <span class="tbl">student</span>(matrikel_nr),
+  <span class="kw">FOREIGN KEY</span> (kurs_id)     <span class="kw">REFERENCES</span> <span class="tbl">kurs</span>(kurs_id)
+);</div>
+
+    <div class="divider"></div>
+    <div style="display:flex;gap:1rem">
+      <button class="btn-nav" onclick="showPage('m8-grundlagen')">&#8592; Zur&uuml;ck</button>
+      <button class="btn-nav primary" onclick="showPage('m8-erweitert')">Weiter: Erweitertes ERM &#8594;</button>
+    </div>
+  </div>
+
+  <!-- ══ MODUL 8: ERWEITERTES ERM ══ -->
+  <div class="page" id="page-m8-erweitert">
+    <span class="chapter-tag tag-ddl">Modul 08 &middot; ER-Diagramme</span>
+    <h1>Erweitertes ERM</h1>
+    <p class="lead">Das erweiterte ERM f&uuml;gt Generalisierung (IS-A), Spezialisierung und rekursive Beziehungen hinzu.</p>
+
+    <h2>Generalisierung (IS-A)</h2>
+    <p>Vererbung im Datenbankmodell. Eine Unterklasse "ist ein" spezieller Typ der Oberklasse und erbt deren Attribute.</p>
+
+    <div class="db-visual">
+      <svg viewBox="0 0 500 230" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:500px;font-family:'DM Mono',monospace">
+        <rect x="160" y="10" width="160" height="55" rx="4" fill="rgba(0,200,255,0.08)" stroke="#00c8ff" stroke-width="1.5"/>
+        <text x="240" y="32" text-anchor="middle" fill="#00c8ff" font-size="12" font-weight="600">Fahrzeug</text>
+        <line x1="170" y1="43" x2="310" y2="43" stroke="#3d4f6a" stroke-width="0.5"/>
+        <text x="240" y="57" text-anchor="middle" fill="#8090a8" font-size="9">fahrzeug_id, kennzeichen</text>
+        <line x1="240" y1="65" x2="240" y2="85" stroke="#3d4f6a" stroke-width="1.5"/>
+        <polygon points="240,85 215,108 265,108" fill="rgba(124,111,255,0.15)" stroke="#7c6fff" stroke-width="1.5"/>
+        <text x="240" y="103" text-anchor="middle" fill="#7c6fff" font-size="9">IS-A</text>
+        <line x1="215" y1="108" x2="100" y2="145" stroke="#3d4f6a" stroke-width="1.5"/>
+        <rect x="20" y="145" width="150" height="65" rx="4" fill="rgba(0,229,160,0.08)" stroke="#00e5a0" stroke-width="1.5"/>
+        <text x="95" y="165" text-anchor="middle" fill="#00e5a0" font-size="11" font-weight="600">Elektro_Auto</text>
+        <line x1="30" y1="178" x2="160" y2="178" stroke="#3d4f6a" stroke-width="0.5"/>
+        <text x="95" y="192" text-anchor="middle" fill="#8090a8" font-size="9">fahrzeug_id PK+FK</text>
+        <text x="95" y="204" text-anchor="middle" fill="#8090a8" font-size="9">batterie, lade_zustand</text>
+        <line x1="265" y1="108" x2="360" y2="145" stroke="#3d4f6a" stroke-width="1.5"/>
+        <rect x="305" y="145" width="160" height="65" rx="4" fill="rgba(245,166,35,0.08)" stroke="#f5a623" stroke-width="1.5"/>
+        <text x="385" y="165" text-anchor="middle" fill="#f5a623" font-size="11" font-weight="600">Verbrenner_Auto</text>
+        <line x1="315" y1="178" x2="455" y2="178" stroke="#3d4f6a" stroke-width="0.5"/>
+        <text x="385" y="192" text-anchor="middle" fill="#8090a8" font-size="9">fahrzeug_id PK+FK</text>
+        <text x="385" y="204" text-anchor="middle" fill="#8090a8" font-size="9">kraftstoff_typ, tank</text>
+      </svg>
+    </div>
+
+    <div class="code-block"><span class="code-lang">SQL &ndash; IS-A Umsetzung</span><span class="kw">CREATE TABLE</span> <span class="tbl">fahrzeug</span> (
+  fahrzeug_id  <span class="fn">INTEGER</span> <span class="kw">PRIMARY KEY</span>,
+  kennzeichen  <span class="fn">VARCHAR</span>(<span class="num">10</span>) <span class="kw">NOT NULL</span>
+);
+<span class="kw">CREATE TABLE</span> <span class="tbl">elektro_auto</span> (
+  fahrzeug_id         <span class="fn">INTEGER</span> <span class="kw">PRIMARY KEY</span>,  <span class="cm">-- PK = FK!</span>
+  batterie_kapazitaet <span class="fn">DECIMAL</span>(<span class="num">5</span>,<span class="num">2</span>),
+  <span class="kw">FOREIGN KEY</span> (fahrzeug_id) <span class="kw">REFERENCES</span> <span class="tbl">fahrzeug</span>(fahrzeug_id)
+);</div>
+
+    <h2>Rekursive Beziehung</h2>
+    <p>Eine Entit&auml;t steht in Beziehung zu sich selbst. Klassisch: Mitarbeiter hat einen Vorgesetzten der auch Mitarbeiter ist.</p>
+    <div class="code-block"><span class="code-lang">SQL</span><span class="kw">CREATE TABLE</span> <span class="tbl">mitarbeiter</span> (
+  mitarbeiter_id  <span class="fn">INTEGER</span> <span class="kw">PRIMARY KEY</span>,
+  name            <span class="fn">VARCHAR</span>(<span class="num">100</span>),
+  vorgesetzter_id <span class="fn">INTEGER</span>,  <span class="cm">-- FK auf dieselbe Tabelle</span>
+  <span class="kw">FOREIGN KEY</span> (vorgesetzter_id) <span class="kw">REFERENCES</span> <span class="tbl">mitarbeiter</span>(mitarbeiter_id)
+);</div>
+
+    <div class="info-box blue">
+      <div class="box-label">F&uuml;r die IHK</div>
+      <p>Pflicht: Kardinalit&auml;ten lesen und setzen, M:N durch Zwischentabelle aufl&ouml;sen, IS-A als PK=FK umsetzen, starke von schwachen Entit&auml;ten unterscheiden. Chen- und Crow's Foot-Notation erkl&auml;ren k&ouml;nnen.</p>
+    </div>
+
+    <div class="divider"></div>
+    <div style="display:flex;gap:1rem">
+      <button class="btn-nav" onclick="showPage('m8-regeln')">&#8592; Zur&uuml;ck</button>
+      <button class="btn-nav primary" onclick="showPage('m8-quiz')">Weiter: Quiz 8 &#8594;</button>
+    </div>
+  </div>
+
+  <!-- ══ MODUL 8: QUIZ ══ -->
+  <div class="page" id="page-m8-quiz">
+    <span class="chapter-tag tag-quiz">Modul 08 &middot; Quiz</span>
+    <h1>Quiz 8: ER-Diagramme</h1>
+    <p class="lead">7 Fragen zu ERM, Kardinalit&auml;ten und SQL-Umsetzung.</p>
+    <div class="quiz-container" id="quiz-m8">
+
+      <div class="quiz-question" data-q="0">
+        <div class="question-num">Frage 1 von 7</div>
+        <div class="question-text">Was ist eine Entit&auml;t im ER-Modell?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m8',0,'A')"><span class="option-letter">A</span> Eine SQL-Abfrage</button>
+          <button class="quiz-option" onclick="selectOption(this,'m8',0,'B')"><span class="option-letter">B</span> Ein Objekt der realen Welt das in der Datenbank gespeichert wird und sp&auml;ter zur Tabelle wird</button>
+          <button class="quiz-option" onclick="selectOption(this,'m8',0,'C')"><span class="option-letter">C</span> Ein einzelner Datensatz in einer Tabelle</button>
+          <button class="quiz-option" onclick="selectOption(this,'m8',0,'D')"><span class="option-letter">D</span> Ein Fremdschl&uuml;ssel zwischen zwei Tabellen</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m8-0"></div>
+      </div>
+
+      <div class="quiz-question" data-q="1">
+        <div class="question-num">Frage 2 von 7</div>
+        <div class="question-text">Student besucht viele Kurse, ein Kurs wird von vielen Studenten besucht. Welche Kardinalit&auml;t liegt vor?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m8',1,'A')"><span class="option-letter">A</span> 1 : 1</button>
+          <button class="quiz-option" onclick="selectOption(this,'m8',1,'B')"><span class="option-letter">B</span> 1 : N</button>
+          <button class="quiz-option" onclick="selectOption(this,'m8',1,'C')"><span class="option-letter">C</span> M : N</button>
+          <button class="quiz-option" onclick="selectOption(this,'m8',1,'D')"><span class="option-letter">D</span> N : 1</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m8-1"></div>
+      </div>
+
+      <div class="quiz-question" data-q="2">
+        <div class="question-num">Frage 3 von 7</div>
+        <div class="question-text">Wie wird eine M:N-Beziehung in SQL umgesetzt?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m8',2,'A')"><span class="option-letter">A</span> Mit einem einzigen JOIN-Befehl</button>
+          <button class="quiz-option" onclick="selectOption(this,'m8',2,'B')"><span class="option-letter">B</span> Direkt mit zwei Fremdschl&uuml;sseln in einer der Tabellen</button>
+          <button class="quiz-option" onclick="selectOption(this,'m8',2,'C')"><span class="option-letter">C</span> Durch eine Zwischentabelle mit den PKs beider Seiten als zusammengesetztem PK</button>
+          <button class="quiz-option" onclick="selectOption(this,'m8',2,'D')"><span class="option-letter">D</span> Das ist in SQL nicht m&ouml;glich</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m8-2"></div>
+      </div>
+
+      <div class="quiz-question" data-q="3">
+        <div class="question-num">Frage 4 von 7</div>
+        <div class="question-text">Was ist eine schwache Entit&auml;t?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m8',3,'A')"><span class="option-letter">A</span> Eine Entit&auml;t ohne Attribute</button>
+          <button class="quiz-option" onclick="selectOption(this,'m8',3,'B')"><span class="option-letter">B</span> Eine Entit&auml;t die ohne ihre &uuml;bergeordnete Entit&auml;t nicht existieren kann und deren PK den FK enth&auml;lt</button>
+          <button class="quiz-option" onclick="selectOption(this,'m8',3,'C')"><span class="option-letter">C</span> Eine Entit&auml;t mit weniger als 3 Attributen</button>
+          <button class="quiz-option" onclick="selectOption(this,'m8',3,'D')"><span class="option-letter">D</span> Eine Entit&auml;t ohne Prim&auml;rschl&uuml;ssel</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m8-3"></div>
+      </div>
+
+      <div class="quiz-question" data-q="4">
+        <div class="question-num">Frage 5 von 7</div>
+        <div class="question-text">Was bedeutet IS-A im erweiterten ERM?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m8',4,'A')"><span class="option-letter">A</span> Eine rekursive Beziehung einer Entit&auml;t zu sich selbst</button>
+          <button class="quiz-option" onclick="selectOption(this,'m8',4,'B')"><span class="option-letter">B</span> Ein SQL-Operator zum Vergleich</button>
+          <button class="quiz-option" onclick="selectOption(this,'m8',4,'C')"><span class="option-letter">C</span> Generalisierung: Unterklasse erbt Attribute der Oberklasse und ist ein spezieller Typ davon</button>
+          <button class="quiz-option" onclick="selectOption(this,'m8',4,'D')"><span class="option-letter">D</span> Eine M:N-Beziehung mit Attributen</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m8-4"></div>
+      </div>
+
+      <div class="quiz-question" data-q="5">
+        <div class="question-num">Frage 6 von 7</div>
+        <div class="question-text">Bei einer 1:N-Beziehung zwischen Kunde (1) und Bestellung (N) &ndash; wo landet der Fremdschl&uuml;ssel?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m8',5,'A')"><span class="option-letter">A</span> In der Tabelle Kunde</button>
+          <button class="quiz-option" onclick="selectOption(this,'m8',5,'B')"><span class="option-letter">B</span> In beiden Tabellen</button>
+          <button class="quiz-option" onclick="selectOption(this,'m8',5,'C')"><span class="option-letter">C</span> In der Tabelle Bestellung (die N-Seite)</button>
+          <button class="quiz-option" onclick="selectOption(this,'m8',5,'D')"><span class="option-letter">D</span> In einer separaten Zwischentabelle</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m8-5"></div>
+      </div>
+
+      <div class="quiz-question" data-q="6">
+        <div class="question-num">Frage 7 von 7</div>
+        <div class="question-text">Was ist der Unterschied zwischen Chen- und Crow's Foot-Notation?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOption(this,'m8',6,'A')"><span class="option-letter">A</span> Chen zeigt Kardinalit&auml;ten, Crow's Foot nicht</button>
+          <button class="quiz-option" onclick="selectOption(this,'m8',6,'B')"><span class="option-letter">B</span> Chen nutzt Rauten f&uuml;r Beziehungen und Ovale f&uuml;r Attribute; Crow's Foot codiert Kardinalit&auml;ten direkt als Liniensymbole</button>
+          <button class="quiz-option" onclick="selectOption(this,'m8',6,'C')"><span class="option-letter">C</span> Crow's Foot ist veraltet und wird nicht mehr verwendet</button>
+          <button class="quiz-option" onclick="selectOption(this,'m8',6,'D')"><span class="option-letter">D</span> Chen-Notation kann keine M:N-Beziehungen darstellen</button>
+        </div>
+        <div class="quiz-feedback" id="fb-m8-6"></div>
+      </div>
+
+      <div class="quiz-result" id="result-m8">
+        <div class="result-score" id="result-score-m8"></div>
+        <div class="result-label">Punkte erreicht</div>
+        <div class="result-msg" id="result-msg-m8"></div>
+        <button class="reset-btn" onclick="resetQuiz('m8')">Quiz zur&uuml;cksetzen</button>
+        <button class="btn-nav primary" style="margin-left:0.75rem" onclick="showPage('final-quiz')">Zum Gesamtquiz &#8594;</button>
+      </div>
+    </div>
+  </div>
+
   <!-- GESAMTQUIZ -->
   <div class="page" id="page-final-quiz">
     <span class="chapter-tag tag-quiz">Abschluss &middot; Gesamtquiz</span>
@@ -3296,6 +3802,7 @@ const PAGE_ORDER = [
   'm5-dml','m5-join','m5-terminal','m5-quiz',
   'm6-dcl','m6-terminal','m6-quiz',
   'm7-sec','m7-quiz',
+  'm8-grundlagen','m8-regeln','m8-erweitert','m8-quiz',
   'final-quiz'
 ];
 
@@ -3321,6 +3828,10 @@ const BREADCRUMBS = {
   'm6-quiz': 'Modul 6 · Quiz',
   'm7-sec': 'Modul 7 · Sicherheit',
   'm7-quiz': 'Modul 7 · Quiz',
+  'm8-grundlagen': 'Modul 8 · ER-Diagramme Grundlagen',
+  'm8-regeln': 'Modul 8 · Kardinalitäten & Regeln',
+  'm8-erweitert': 'Modul 8 · Erweitertes ERM',
+  'm8-quiz': 'Modul 8 · Quiz',
   'final-quiz': 'Gesamtquiz'
 };
 
@@ -4310,6 +4821,27 @@ function toggleTheme() {
 }
 
 initTheme();
+
+
+QUIZ_DATA.m8 = {
+  correct: ['B','C','C','B','C','C','B'],
+  feedback: [
+    { correct: "Richtig. Eine Entit\u00e4t ist ein Objekt der realen Welt das gespeichert werden soll. Im ERM als Rechteck dargestellt, in SQL als Tabelle umgesetzt.",
+      wrong: "Falsch. Eine Entit\u00e4t ist kein SQL-Befehl, kein einzelner Datensatz und kein Schl\u00fcssel. Es ist das Konzept eines Objekts das modelliert werden soll." },
+    { correct: "Richtig. M:N (Viele-zu-Viele): Ein Student besucht viele Kurse UND ein Kurs hat viele Studenten. Beide Seiten k\u00f6nnen mehrfach vorkommen.",
+      wrong: "Falsch. 1:1 w\u00e4re z.B. Mitarbeiter-Ausweis. 1:N w\u00e4re z.B. Abteilung-Mitarbeiter. Hier k\u00f6nnen beide Seiten mehrfach vorkommen \u2013 das ist M:N." },
+    { correct: "Richtig. M:N wird durch eine Zwischentabelle aufgel\u00f6st. Die Zwischentabelle enth\u00e4lt die PKs beider Seiten als zusammengesetzten PK und kann eigene Beziehungsattribute haben.",
+      wrong: "Falsch. M:N kann nicht direkt mit FKs in einer der Tabellen abgebildet werden. JOIN ist eine Abfrageoperation, keine Tabellenstruktur. Eine Zwischentabelle ist die einzige korrekte L\u00f6sung." },
+    { correct: "Richtig. Schwache Entit\u00e4ten sind von einer Vater-Entit\u00e4t abh\u00e4ngig. Ihr PK enth\u00e4lt zwingend den FK der Vater-Entit\u00e4t. Beispiel: Kassenbon_Position ohne Kassenbon.",
+      wrong: "Falsch. Schwache Entit\u00e4ten k\u00f6nnen Attribute haben und haben immer einen PK (der den FK enth\u00e4lt). Das Merkmal ist die Abh\u00e4ngigkeit von einer anderen Entit\u00e4t." },
+    { correct: "Richtig. IS-A = Generalisierung/Vererbung. Elektro_Auto IS-A Fahrzeug bedeutet: jedes Elektro-Auto ist ein Fahrzeug und erbt alle Fahrzeug-Attribute. In SQL: PK der Unterklasse = FK zur Oberklasse.",
+      wrong: "Falsch. IS-A ist kein SQL-Operator, keine rekursive Beziehung und keine M:N-Beziehung. Es ist das Konzept der Generalisierung/Vererbung im Datenbankmodell." },
+    { correct: "Richtig. Bei 1:N wandert der FK immer auf die N-Seite. Bestellung bekommt kunden_id als FK, weil eine Bestellung zu genau einem Kunden geh\u00f6rt.",
+      wrong: "Falsch. Der FK geh\u00f6rt auf die N-Seite (Bestellung), nicht auf die 1-Seite (Kunde). Eine Zwischentabelle ist nur bei M:N n\u00f6tig." },
+    { correct: "Richtig. Chen: Rauten f\u00fcr Beziehungen, Ovale f\u00fcr Attribute, Zahlen an Linien. Crow's Foot: Symbole direkt an Linienenden (Strich = 1, Kr\u00e4henfu\u00df = N, Kreis = optional).",
+      wrong: "Falsch. Beide Notationen zeigen Kardinalit\u00e4ten. Crow's Foot ist modern und weit verbreitet. Beide k\u00f6nnen M:N darstellen." }
+  ]
+};
 
 </script>
 </body>
