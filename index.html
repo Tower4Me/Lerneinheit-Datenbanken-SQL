@@ -868,6 +868,53 @@ p strong { color: var(--text); font-weight: 600; }
   border-left: 2px solid var(--accent);
 }
 
+
+/* ─── LIGHT MODE ─── */
+body.light {
+  --bg: #f0f4f8;
+  --surface: #ffffff;
+  --surface2: #f8fafc;
+  --surface3: #edf2f7;
+  --border: #e2e8f0;
+  --border2: #cbd5e0;
+  --text: #1a202c;
+  --text-dim: #4a5568;
+  --text-faint: #a0aec0;
+  --code-bg: #1a202c;
+}
+body.light .topbar {
+  background: rgba(240,244,248,0.95);
+}
+body.light .sidebar {
+  background: #ffffff;
+}
+body.light .code-block {
+  background: #1e2433;
+  color: #e2e8f0;
+}
+
+/* ─── THEME TOGGLE ─── */
+.theme-toggle {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  padding: 0.25rem 0.7rem;
+  cursor: pointer;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: 0.5rem;
+}
+.theme-toggle:hover {
+  border-color: var(--accent, #00c8ff);
+  color: var(--accent, #00c8ff);
+}
+
 </style>
 </head>
 <body>
@@ -4242,6 +4289,27 @@ function resetDCLTerminal() {
 }
 
 // completeTask bug fix applied directly to source function
+
+
+// ─── THEME TOGGLE ───
+function initTheme() {
+  const saved = localStorage.getItem('theme') || 'dark';
+  applyTheme(saved);
+}
+
+function applyTheme(theme) {
+  document.body.classList.toggle('light', theme === 'light');
+  const btn = document.getElementById('theme-btn');
+  if (btn) btn.textContent = theme === 'light' ? '☀ Hell' : '☾ Dunkel';
+  localStorage.setItem('theme', theme);
+}
+
+function toggleTheme() {
+  const isLight = document.body.classList.contains('light');
+  applyTheme(isLight ? 'dark' : 'light');
+}
+
+initTheme();
 
 </script>
 </body>
