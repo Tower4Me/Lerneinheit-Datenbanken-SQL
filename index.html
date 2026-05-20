@@ -1421,7 +1421,43 @@ body.light .code-block {
     </div>
 
     <h2>Datenbankarchitektur: Schemas</h2>
-    <p>Diese Schemas beschreiben wie Tabellen in einer Datenbank miteinander verkn&uuml;pft sind. Besonders relevant im Data Warehousing (Datenlager).</p>
+    <p>Diese Schemas beschreiben wie Tabellen in einem <strong>Data Warehouse (Datenlager)</strong> miteinander verkn&uuml;pft sind. Ein Data Warehouse ist eine Datenbank die speziell f&uuml;r Analysen und Berichte optimiert ist &ndash; nicht f&uuml;r den Alltagsbetrieb.</p>
+
+    <div class="compare-row">
+      <div class="compare-col good">
+        <div class="col-header">Faktentabelle</div>
+        <ul>
+          <li>Enth&auml;lt <strong>messbare Ereignisse</strong>: Verk&auml;ufe, Bestellungen, Klicks</li>
+          <li>Speichert Zahlen die man aggregieren kann: Menge, Umsatz, Rabatt</li>
+          <li>Enth&auml;lt viele Fremdschl&uuml;ssel auf Dimensionstabellen</li>
+          <li>Wird sehr gro&szlig; (Millionen Zeilen)</li>
+          <li>Beispiel: <code style="font-family:'DM Mono',monospace">verkauf</code>, <code style="font-family:'DM Mono',monospace">bestellung</code></li>
+        </ul>
+      </div>
+      <div class="compare-col good">
+        <div class="col-header">Dimensionstabelle</div>
+        <ul>
+          <li>Enth&auml;lt <strong>beschreibende Kontextdaten</strong>: Wer, Was, Wann, Wo</li>
+          <li>Speichert Texte und Kategorien: Name, Stadt, Kategorie</li>
+          <li>Hat eigene einfache Attribute, wenige oder keine FKs</li>
+          <li>Relativ klein und stabil</li>
+          <li>Beispiel: <code style="font-family:'DM Mono',monospace">kunde</code>, <code style="font-family:'DM Mono',monospace">artikel</code>, <code style="font-family:'DM Mono',monospace">datum</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="info-box green">
+      <div class="box-label">Beispiel: Supermarkt</div>
+      <p>Stell dir vor du kaufst in einem REWE ein. Dieser Kaufvorgang wird in der Datenbank gespeichert. Dabei gibt es zwei Arten von Informationen:</p>
+      <p style="margin-top:0.6rem"><strong>Was ist passiert?</strong> &rarr; Du hast 2 Liter Milch f&uuml;r 1,89&euro; gekauft. Das sind die <strong>Fakten</strong>: Menge und Preis. Diese landen in der Faktentabelle.</p>
+      <p><strong>Wer, was, wann, wo?</strong> &rarr; Welcher Kunde? Welches Produkt? Wann? In welcher Filiale? Das sind die n&auml;heren Umst&auml;nde des Kaufs. Sie stehen in den sogenannten <strong>Dimensionstabellen</strong> &ndash; also Tabellen die den Kontext beschreiben.</p>
+      <p>Der Begriff "Dimension" klingt kompliziert, bedeutet aber nur: eine <em>Perspektive</em> aus der man sich einen Kauf anschauen kann. Zeit ist eine Dimension. Produkt ist eine Dimension. Kunde ist eine Dimension.</p>
+    </div>
+
+    <div class="info-box blue">
+      <div class="box-label">Warum diese Trennung?</div>
+      <p>Weil man so flexible Auswertungen machen kann. "Wie viel haben wir letzten Monat in K&ouml;ln verkauft?" kombiniert einfach Fakten (Umsatz) mit Dimensionen (Monat, Stadt). Das w&auml;re mit einer einzigen riesigen Tabelle viel schwerer.</p>
+    </div>
 
     <div class="schema-tabs">
       <button class="schema-tab active" onclick="switchSchema('stern', this)">Stern-Schema</button>
