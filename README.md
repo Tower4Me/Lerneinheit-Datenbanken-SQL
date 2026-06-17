@@ -1,8 +1,8 @@
-# Lerneinheit: Dateien & Dateisysteme
+# Lerneinheit: Datenbanken & SQL
 
-Interaktive Lernplattform zur Prüfungsvorbereitung für Fachinformatiker Systemintegration (FiSi). Behandelt Dateiformate, Dateisysteme (FAT, NTFS, ext4 u.a.), Verzeichnisstrukturen, Zugriffsrechte und Speicherorganisation, jeweils mit Quizzen und Praxisbeispielen.
+Interaktive Lernplattform zur Prüfungsvorbereitung für Fachinformatiker Systemintegration (FiSi). Behandelt relationale Datenbanken, SQL (DDL, DML, DCL), Normalisierung, JOINs, Transaktionen und ER-Diagramme, jeweils mit Quizzen und Praxisbeispielen.
 
-**➡️ Live-Version: [Lerneinheit-Dateien-Dateisysteme](https://tower4me.github.io/Lerneinheit-Dateien-Dateisysteme/)**
+**➡️ Live-Version: [Lerneinheit-Datenbanken-SQL](https://tower4me.github.io/Lerneinheit-Datenbanken-SQL/)**
 
 > ⚠️ **Hinweis**
 > Dies ist privat erstelltes, inoffizielles Lernmaterial, kein offizielles Material der IHK. Die Inhalte wurden mit Unterstützung von KI erstellt und können Fehler enthalten. Keine Gewähr auf Richtigkeit oder Vollständigkeit. Das Material wird laufend verbessert. Im Zweifel immer mit offiziellen Quellen und Prüfungsunterlagen abgleichen.
