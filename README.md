@@ -1,6 +1,6 @@
 # SQL Lernplattform
 
-**Live:** [tower4me.github.io/Datenbanken & SQL]([https://tower4me.github.io/Lerneinheit-Datenbanken-SQL/])
+**Live:** [tower4me.github.io/Datenbanken & SQL](https://tower4me.github.io/Lerneinheit-Datenbanken-SQL/)
 
 Eine interaktive Lernplattform für SQL und Datenbankgrundlagen, gebaut für Azubis und Einsteiger ohne Vorkenntnisse. Alle Konzepte werden von Grund auf erklärt, mit Alltagsbeispielen, einer durchgehenden Story und echten SQL-Übungen direkt im Browser.
 
